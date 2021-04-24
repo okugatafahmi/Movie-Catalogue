@@ -1,0 +1,33 @@
+package com.okugata.moviecatalogue.ui.tvshows
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.okugata.moviecatalogue.databinding.FragmentTvShowsBinding
+import com.okugata.moviecatalogue.utils.DataDummy
+
+class TvShowsFragment : Fragment() {
+    private lateinit var binding: FragmentTvShowsBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentTvShowsBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (activity != null) {
+            val tvShows = DataDummy.generateDummyTvShows()
+            val tvShowAdapter = TvShowAdapter()
+            tvShowAdapter.setTvShows(tvShows)
+            with(binding.rvTvShows) {
+                layoutManager = LinearLayoutManager(context)
+                setHasFixedSize(true)
+                adapter = tvShowAdapter
+            }
+        }
+    }
+}
