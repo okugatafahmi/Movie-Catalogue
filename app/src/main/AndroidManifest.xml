@@ -3,13 +3,19 @@
     package="com.okugata.moviecatalogue">
 
     <application
-        android:fullBackupContent="true"
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MovieCatalogue">
+        <activity
+            android:name=".ui.tvshows.TvShowDetailActivity"
+            android:theme="@style/Theme.MovieCatalogue.NoActionBar" />
+        <activity
+            android:name=".ui.movies.MovieDetailActivity"
+            android:theme="@style/Theme.MovieCatalogue.NoActionBar" />
         <activity android:name=".ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

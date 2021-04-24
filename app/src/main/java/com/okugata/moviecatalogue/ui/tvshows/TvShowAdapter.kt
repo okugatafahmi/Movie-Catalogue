@@ -1,5 +1,6 @@
 package com.okugata.moviecatalogue.ui.tvshows
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -37,10 +38,9 @@ class TvShowAdapter : RecyclerView.Adapter<TvShowAdapter.TvShowViewHolder>() {
                 tvItemTitle.text = tvShow.title
                 tvItemDate.text = tvShow.releaseDate
                 itemView.setOnClickListener {
-                    // TODO: To detail activity
-                    /*val intent = Intent(itemView.context, DetailCourseActivity::class.java)
-                    intent.putExtra(DetailCourseActivity.EXTRA_COURSE, movie.movieId)
-                    itemView.context.startActivity(intent)*/
+                    val intent = Intent(itemView.context, TvShowDetailActivity::class.java)
+                    intent.putExtra(TvShowDetailActivity.EXTRA_TV_SHOW, tvShow)
+                    itemView.context.startActivity(intent)
                 }
                 Glide.with(itemView.context)
                     .load(tvShow.img)

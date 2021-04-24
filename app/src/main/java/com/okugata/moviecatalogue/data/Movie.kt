@@ -1,5 +1,9 @@
 package com.okugata.moviecatalogue.data
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Movie(
     val title: String,
     val releaseDate: String,
@@ -7,4 +11,4 @@ data class Movie(
     val overview: String,
     val genre: String,
     val duration: String
-)
+) : Parcelable
