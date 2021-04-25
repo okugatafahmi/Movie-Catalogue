@@ -6,4 +6,14 @@
     <string name="release_date">Release date</string>
     <string name="overview">Overview</string>
     <string name="description">Description</string>
+    <string name="detail">Detail</string>
+    <string name="share">Share</string>
+    <string name="share_movie">I found great movie called %1$s</string>
+    <string name="share_tv_show">I found great tv show called %1$s</string>
+    <string name="separator_2">%2$s %1$s %3$s</string>
+    <string name="separator_3">%2$s %1$s %3$s %1$s %4$s</string>
+    <plurals name="numberOfEpisode">
+        <item quantity="one">%1$s episode</item>
+        <item quantity="other">%1$s episodes</item>
+    </plurals>
 </resources>

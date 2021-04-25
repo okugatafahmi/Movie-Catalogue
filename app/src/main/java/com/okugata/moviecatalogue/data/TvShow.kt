@@ -10,5 +10,6 @@ data class TvShow(
     val img: Int,
     val overview: String,
     val genre: String,
-    val duration: String
+    val duration: String,
+    val episode: Int
 ) : Parcelable
