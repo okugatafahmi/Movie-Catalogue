@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.R
 import com.okugata.moviecatalogue.data.TvShow
@@ -14,32 +15,39 @@ class TvShowDetailActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_TV_SHOW ="extra_tv_show"
     }
+
     private lateinit var binding: ActivityTvShowDetailBinding
-    private lateinit var tvShow: TvShow
+    private lateinit var tvShowViewModel: TvShowViewModel
+    private var tvShow: TvShow? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityTvShowDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        tvShow = intent.getParcelableExtra<TvShow>(EXTRA_TV_SHOW) as TvShow
+        tvShowViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[TvShowViewModel::class.java]
+        if (tvShowViewModel.tvShow == null) {
+            tvShowViewModel.tvShow = intent.getParcelableExtra<TvShow>(EXTRA_TV_SHOW) as TvShow
+        }
+        tvShow = tvShowViewModel.tvShow
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = tvShow.title
+            title = tvShow?.title
         }
 
         with(binding) {
             Glide.with(this@TvShowDetailActivity)
-                .load(tvShow.img)
+                .load(tvShow?.img)
                 .into(imagePoster)
-            textTitle.text = tvShow.title
-            textDate.text = tvShow.releaseDate
-            textOverview.text = tvShow.overview
-            val episode = resources.getQuantityString(R.plurals.numberOfEpisode, tvShow.episode, tvShow.episode)
+            textTitle.text = tvShow?.title
+            textDate.text = tvShow?.releaseDate
+            textOverview.text = tvShow?.overview
+            val episode = resources.getQuantityString(R.plurals.numberOfEpisode, tvShow?.episode?:1, tvShow?.episode)
             textDetail.text = getString(R.string.separator_3, "\u2022",
-                tvShow.genre, tvShow.duration, episode)
+                tvShow?.genre, tvShow?.duration, episode)
         }
     }
 
@@ -61,7 +69,7 @@ class TvShowDetailActivity : AppCompatActivity() {
             action = Intent.ACTION_SEND
             putExtra(
                 Intent.EXTRA_TEXT,
-                getString(R.string.share_tv_show,tvShow.title)
+                getString(R.string.share_tv_show,tvShow?.title)
             )
             type = "text/plain"
         }

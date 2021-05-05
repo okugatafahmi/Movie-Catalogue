@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.R
 import com.okugata.moviecatalogue.data.Movie
@@ -16,7 +17,8 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityMovieDetailBinding
-    private lateinit var movie: Movie
+    private lateinit var movieViewModel: MovieViewModel
+    private var movie: Movie ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,23 +26,28 @@ class MovieDetailActivity : AppCompatActivity() {
         binding = ActivityMovieDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        movie = intent.getParcelableExtra<Movie>(EXTRA_MOVIE) as Movie
+        movieViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[MovieViewModel::class.java]
+        if (movieViewModel.movie == null) {
+            movieViewModel.movie = intent.getParcelableExtra<Movie>(EXTRA_MOVIE) as Movie
+        }
+
+        movie = movieViewModel.movie
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = movie.title
+            title = movie?.title
         }
 
         with(binding) {
             Glide.with(this@MovieDetailActivity)
-                .load(movie.img)
+                .load(movie?.img)
                 .into(imagePoster)
-            textTitle.text = movie.title
-            textDate.text = movie.releaseDate
-            textOverview.text = movie.overview
+            textTitle.text = movie?.title
+            textDate.text = movie?.releaseDate
+            textOverview.text = movie?.overview
             textDetail.text = getString(R.string.separator_2, "\u2022",
-                movie.genre, movie.duration)
+                movie?.genre, movie?.duration)
         }
     }
 
@@ -62,7 +69,7 @@ class MovieDetailActivity : AppCompatActivity() {
             action = Intent.ACTION_SEND
             putExtra(
                 Intent.EXTRA_TEXT,
-                getString(R.string.share_movie, movie.title)
+                getString(R.string.share_movie, movie?.title)
             )
             type = "text/plain"
         }
