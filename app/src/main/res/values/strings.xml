@@ -12,6 +12,7 @@
     <string name="share_tv_show">I found great tv show called %1$s</string>
     <string name="separator_2">%2$s %1$s %3$s</string>
     <string name="separator_3">%2$s %1$s %3$s %1$s %4$s</string>
+    <string name="poster">poster</string>
     <plurals name="numberOfEpisode">
         <item quantity="one">%1$s episode</item>
         <item quantity="other">%1$s episodes</item>

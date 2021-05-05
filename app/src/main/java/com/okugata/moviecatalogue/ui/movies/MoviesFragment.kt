@@ -11,25 +11,39 @@ import com.okugata.moviecatalogue.databinding.FragmentMoviesBinding
 
 class MoviesFragment : Fragment() {
     private lateinit var binding: FragmentMoviesBinding
-    private lateinit var movieViewModel: MovieViewModel
+    private lateinit var popularMovieViewModel: PopularMovieViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentMoviesBinding.inflate(layoutInflater, container, false)
-        movieViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[MovieViewModel::class.java]
+        popularMovieViewModel = ViewModelProvider(
+            this,
+            ViewModelProvider.NewInstanceFactory()
+        )[PopularMovieViewModel::class.java]
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
-            val movies = movieViewModel.getMovies()
             val movieAdapter = MovieAdapter()
-            movieAdapter.setMovies(movies)
             with(binding.rvMovies) {
                 layoutManager = LinearLayoutManager(context)
                 setHasFixedSize(true)
                 adapter = movieAdapter
             }
+
+            popularMovieViewModel.popularMovies.observe(viewLifecycleOwner) {
+                movieAdapter.setMovies(it)
+            }
+            popularMovieViewModel.isLoading.observe(viewLifecycleOwner) {
+                binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
+            }
+
+            popularMovieViewModel.getPopularMovies()
         }
     }
 }

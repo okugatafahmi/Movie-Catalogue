@@ -1,20 +1,26 @@
 package com.okugata.moviecatalogue.ui.movies
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.okugata.moviecatalogue.data.Movie
+import com.okugata.moviecatalogue.api.ApiConfig.IMAGE_BASE_URL
+import com.okugata.moviecatalogue.data.PopularMovie
 import com.okugata.moviecatalogue.databinding.ListItemsBinding
+import com.okugata.moviecatalogue.utils.DeviceLocale
+import kotlin.collections.ArrayList
 
 class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
-    private var listMovies = ArrayList<Movie>()
+    private var listMovies = ArrayList<PopularMovie>()
 
-    fun setMovies(movies: List<Movie>?) {
+    fun setMovies(movies: List<PopularMovie>?) {
         movies?.let {
             listMovies.clear()
             listMovies.addAll(it)
+            notifyDataSetChanged()
         }
     }
 
@@ -33,17 +39,20 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     class MovieViewHolder(private val binding: ListItemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: Movie) {
+        fun bind(movie: PopularMovie) {
             with(binding) {
                 tvItemTitle.text = movie.title
-                tvItemDate.text = movie.releaseDate
+                tvItemDate.text = DeviceLocale.convertDate(movie.releaseDate)
                 itemView.setOnClickListener {
-                    val intent = Intent(itemView.context, MovieDetailActivity::class.java)
-                    intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
+                    val intent = Intent(itemView.context, MovieDetailActivity::class.java).apply {
+                        putExtra(MovieDetailActivity.EXTRA_MOVIE_ID, movie.id)
+                        putExtra(MovieDetailActivity.EXTRA_MOVIE_TITLE, movie.title)
+                    }
                     itemView.context.startActivity(intent)
                 }
                 Glide.with(itemView.context)
-                    .load(movie.img)
+                    .load("$IMAGE_BASE_URL${movie.posterPath}")
+                    .placeholder(ColorDrawable(Color.GRAY))
                     .into(imgPoster)
             }
         }

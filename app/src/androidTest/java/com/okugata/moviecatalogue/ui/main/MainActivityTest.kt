@@ -8,14 +8,16 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.okugata.moviecatalogue.R
-import com.okugata.moviecatalogue.utils.DataDummy
+import com.okugata.moviecatalogue.data.PopularMovie
+import com.okugata.moviecatalogue.data.PopularTvShow
 import org.junit.Before
 import org.junit.Test
+import java.util.*
 
 class MainActivityTest{
 
-    private val movies = DataDummy.generateDummyMovies()
-    private val tvShows = DataDummy.generateDummyTvShows()
+    private val movies = LinkedList<PopularMovie>()
+    private val tvShows = LinkedList<PopularTvShow>()
 
     @Before
     fun setup(){
@@ -52,9 +54,9 @@ class MainActivityTest{
         onView(withId(R.id.rv_tv_shows)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_tv_shows)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
         onView(withId(R.id.text_title)).check(matches(isDisplayed()))
-        onView(withId(R.id.text_title)).check(matches(withText(tvShows[0].title)))
+        onView(withId(R.id.text_title)).check(matches(withText(tvShows[0].name)))
         onView(withId(R.id.text_date)).check(matches(isDisplayed()))
-        onView(withId(R.id.text_date)).check(matches(withText(tvShows[0].releaseDate)))
+        onView(withId(R.id.text_date)).check(matches(withText(tvShows[0].firstAirDate)))
         onView(withId(R.id.text_overview)).check(matches(isDisplayed()))
         onView(withId(R.id.text_overview)).check(matches(withText(tvShows[0].overview)))
     }

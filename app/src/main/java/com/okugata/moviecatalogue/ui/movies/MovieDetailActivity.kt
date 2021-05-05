@@ -1,24 +1,30 @@
 package com.okugata.moviecatalogue.ui.movies
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.R
-import com.okugata.moviecatalogue.data.Movie
+import com.okugata.moviecatalogue.api.ApiConfig
+import com.okugata.moviecatalogue.data.MovieDetailResponse
 import com.okugata.moviecatalogue.databinding.ActivityMovieDetailBinding
+import com.okugata.moviecatalogue.utils.DeviceLocale
 
 class MovieDetailActivity : AppCompatActivity() {
     companion object {
-        const val EXTRA_MOVIE = "extra_movie"
+        const val EXTRA_MOVIE_ID = "extra_movie_id"
+        const val EXTRA_MOVIE_TITLE = "extra_movie_title"
     }
 
     private lateinit var binding: ActivityMovieDetailBinding
-    private lateinit var movieViewModel: MovieViewModel
-    private var movie: Movie ?= null
+    private lateinit var movieDetailViewModel: MovieDetailViewModel
+    private var movieId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,29 +32,21 @@ class MovieDetailActivity : AppCompatActivity() {
         binding = ActivityMovieDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        movieViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[MovieViewModel::class.java]
-        if (movieViewModel.movie == null) {
-            movieViewModel.movie = intent.getParcelableExtra<Movie>(EXTRA_MOVIE) as Movie
-        }
-
-        movie = movieViewModel.movie
+        movieDetailViewModel = ViewModelProvider(
+            this,
+            ViewModelProvider.NewInstanceFactory()
+        )[MovieDetailViewModel::class.java]
+        movieId = intent.getIntExtra(EXTRA_MOVIE_ID, 0)
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = movie?.title
+            title = intent.getStringExtra(EXTRA_MOVIE_TITLE)
         }
 
-        with(binding) {
-            Glide.with(this@MovieDetailActivity)
-                .load(movie?.img)
-                .into(imagePoster)
-            textTitle.text = movie?.title
-            textDate.text = movie?.releaseDate
-            textOverview.text = movie?.overview
-            textDetail.text = getString(R.string.separator_2, "\u2022",
-                movie?.genre, movie?.duration)
-        }
+        movieDetailViewModel.movieDetail.observe(this) { setDetail(it) }
+        movieDetailViewModel.isLoading.observe(this) { setLoading(it) }
+        movieDetailViewModel.getMovieDetail(movieId)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -69,11 +67,35 @@ class MovieDetailActivity : AppCompatActivity() {
             action = Intent.ACTION_SEND
             putExtra(
                 Intent.EXTRA_TEXT,
-                getString(R.string.share_movie, movie?.title)
+                getString(R.string.share_movie, movieDetailViewModel.movieDetail.value?.title)
             )
             type = "text/plain"
         }
         val shareIntent = Intent.createChooser(sendIntent, null)
         startActivity(shareIntent)
+    }
+
+    private fun setDetail(movie: MovieDetailResponse) {
+        supportActionBar?.title = movie.title
+        with(binding) {
+            Glide.with(this@MovieDetailActivity)
+                .load("${ApiConfig.IMAGE_BASE_URL}${movie.posterPath}")
+                .placeholder(ColorDrawable(Color.GRAY))
+                .into(imagePoster)
+            textTitle.text = movie.title
+            textDate.text = DeviceLocale.convertDate(movie.releaseDate)
+            textOverview.text = movie.overview
+            textDetail.text = getString(R.string.separator_2, "\u2022",
+                movie.getGenres(), "${movie.runtime} minutes")
+        }
+    }
+
+    private fun setLoading(isLoading: Boolean) {
+        val progressBarVisibility = if (isLoading) View.VISIBLE else View.GONE
+        val othersVisibility = if (isLoading) View.GONE else View.VISIBLE
+        with(binding) {
+            progressBar.visibility = progressBarVisibility
+            headerOverview.visibility = othersVisibility
+        }
     }
 }

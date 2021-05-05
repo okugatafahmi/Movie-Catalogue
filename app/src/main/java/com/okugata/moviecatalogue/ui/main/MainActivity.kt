@@ -1,8 +1,7 @@
 package com.okugata.moviecatalogue.ui.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.okugata.moviecatalogue.R
+import androidx.appcompat.app.AppCompatActivity
 import com.okugata.moviecatalogue.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
