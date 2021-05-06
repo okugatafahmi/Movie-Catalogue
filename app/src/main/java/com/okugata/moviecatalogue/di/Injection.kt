@@ -1,6 +1,6 @@
 package com.okugata.moviecatalogue.di
 
-import com.okugata.moviecatalogue.data.source.CatalogueRepository
+import com.okugata.moviecatalogue.data.CatalogueRepository
 import com.okugata.moviecatalogue.data.source.remote.RemoteDataSource
 
 object Injection {

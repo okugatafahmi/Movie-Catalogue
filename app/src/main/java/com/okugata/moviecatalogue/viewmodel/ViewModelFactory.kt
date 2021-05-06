@@ -2,7 +2,7 @@ package com.okugata.moviecatalogue.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.okugata.moviecatalogue.data.source.CatalogueRepository
+import com.okugata.moviecatalogue.data.CatalogueRepository
 import com.okugata.moviecatalogue.di.Injection
 
 class ViewModelFactory private constructor(private val catalogueRepository: CatalogueRepository) :

@@ -1,4 +1,4 @@
-package com.okugata.moviecatalogue.data.source
+package com.okugata.moviecatalogue.data
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -9,18 +9,9 @@ import com.okugata.moviecatalogue.data.source.remote.response.PopularMovie
 import com.okugata.moviecatalogue.data.source.remote.response.PopularTvShow
 import com.okugata.moviecatalogue.data.source.remote.response.TvShowDetailResponse
 
-class CatalogueRepository private constructor(private val remoteDataSource: RemoteDataSource) :
-    CatalogueDataSource {
-
-    companion object {
-        const val TAG = "CatalogueRepository"
-
-        @Volatile
-        private var instance: CatalogueRepository? = null
-        fun getInstance(remoteData: RemoteDataSource): CatalogueRepository =
-            instance ?: synchronized(this) {
-                instance ?: CatalogueRepository(remoteData).apply { instance = this }
-            }
+class FakeCatalogueRepository(private val remoteDataSource: RemoteDataSource): CatalogueDataSource {
+    companion object{
+        const val TAG = "FakeCatalogueRepository"
     }
 
     override fun getPopularMovie(): LiveData<List<PopularMovie>> {
@@ -78,5 +69,4 @@ class CatalogueRepository private constructor(private val remoteDataSource: Remo
         }
         return tvShowDetail
     }
-
 }

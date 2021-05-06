@@ -6,6 +6,7 @@ import com.okugata.moviecatalogue.data.source.remote.response.PopularMovieRespon
 import com.okugata.moviecatalogue.data.source.remote.response.PopularTvShowResponse
 import com.okugata.moviecatalogue.data.source.remote.response.TvShowDetailResponse
 import com.okugata.moviecatalogue.utils.DeviceLocale
+import com.okugata.moviecatalogue.utils.EspressoIdlingResource
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -24,6 +25,7 @@ class RemoteDataSource private constructor() {
     fun getPopularMovie(callback: (String?, PopularMovieResponse?) -> Unit) {
         val client = ApiConfig.getApiService()
             .getPopularMovie(DeviceLocale.getLanguage())
+        EspressoIdlingResource.increment()
         client.enqueue(object : Callback<PopularMovieResponse> {
             override fun onResponse(
                 call: Call<PopularMovieResponse>,
@@ -34,10 +36,12 @@ class RemoteDataSource private constructor() {
                 } else {
                     callback("onFailure: ${response.message()}", null)
                 }
+                EspressoIdlingResource.decrement()
             }
 
             override fun onFailure(call: Call<PopularMovieResponse>, t: Throwable) {
                 callback("onFailure: ${t.message.toString()}", null)
+                EspressoIdlingResource.decrement()
             }
 
         })
@@ -46,6 +50,7 @@ class RemoteDataSource private constructor() {
     fun getMovieDetail(id: Int, callback: (String?, MovieDetailResponse?) -> Unit) {
         val client = ApiConfig.getApiService()
             .getMovieDetail(id, DeviceLocale.getLanguage())
+        EspressoIdlingResource.increment()
         client.enqueue(object : Callback<MovieDetailResponse> {
             override fun onResponse(
                 call: Call<MovieDetailResponse>,
@@ -56,10 +61,12 @@ class RemoteDataSource private constructor() {
                 } else {
                     callback("onFailure: ${response.message()}", null)
                 }
+                EspressoIdlingResource.decrement()
             }
 
             override fun onFailure(call: Call<MovieDetailResponse>, t: Throwable) {
                 callback("onFailure: ${t.message.toString()}", null)
+                EspressoIdlingResource.decrement()
             }
 
         })
@@ -68,6 +75,7 @@ class RemoteDataSource private constructor() {
     fun getPopularTvShow(callback: (String?, PopularTvShowResponse?) -> Unit) {
         val client = ApiConfig.getApiService()
             .getPopularTvShow(DeviceLocale.getLanguage())
+        EspressoIdlingResource.increment()
         client.enqueue(object : Callback<PopularTvShowResponse> {
             override fun onResponse(
                 call: Call<PopularTvShowResponse>,
@@ -78,10 +86,12 @@ class RemoteDataSource private constructor() {
                 } else {
                     callback("onFailure: ${response.message()}", null)
                 }
+                EspressoIdlingResource.decrement()
             }
 
             override fun onFailure(call: Call<PopularTvShowResponse>, t: Throwable) {
                 callback("onFailure: ${t.message.toString()}", null)
+                EspressoIdlingResource.decrement()
             }
 
         })
@@ -90,6 +100,7 @@ class RemoteDataSource private constructor() {
     fun getTvShowDetail(id: Int, callback: (String?, TvShowDetailResponse?) -> Unit) {
         val client = ApiConfig.getApiService()
             .getTvShowDetail(id, DeviceLocale.getLanguage())
+        EspressoIdlingResource.increment()
         client.enqueue(object : Callback<TvShowDetailResponse> {
             override fun onResponse(
                 call: Call<TvShowDetailResponse>,
@@ -100,10 +111,12 @@ class RemoteDataSource private constructor() {
                 } else {
                     callback("onFailure: ${response.message()}", null)
                 }
+                EspressoIdlingResource.decrement()
             }
 
             override fun onFailure(call: Call<TvShowDetailResponse>, t: Throwable) {
                 callback("onFailure: ${t.message.toString()}", null)
+                EspressoIdlingResource.decrement()
             }
 
         })

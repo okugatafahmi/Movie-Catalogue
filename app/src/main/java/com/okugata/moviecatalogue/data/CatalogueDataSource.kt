@@ -1,4 +1,4 @@
-package com.okugata.moviecatalogue.data.source
+package com.okugata.moviecatalogue.data
 
 import androidx.lifecycle.LiveData
 import com.okugata.moviecatalogue.data.source.remote.response.MovieDetailResponse

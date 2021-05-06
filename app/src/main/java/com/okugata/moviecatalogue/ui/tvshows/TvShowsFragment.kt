@@ -39,7 +39,7 @@ class TvShowsFragment : Fragment() {
             }
 
             binding.progressBar.visibility = View.VISIBLE
-            popularTvShowViewModel.getPopularTvShows().observe(viewLifecycleOwner) { list ->
+            popularTvShowViewModel.getPopularTvShow().observe(viewLifecycleOwner) { list ->
                 binding.progressBar.visibility = View.GONE
                 list?.let { tvShowAdapter.setTvShows(it) }
             }
