@@ -12,17 +12,21 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.R
 import com.okugata.moviecatalogue.api.ApiConfig
-import com.okugata.moviecatalogue.data.TvShowDetailResponse
+import com.okugata.moviecatalogue.data.source.remote.response.TvShowDetailResponse
 import com.okugata.moviecatalogue.databinding.ActivityTvShowDetailBinding
+import com.okugata.moviecatalogue.utils.DeviceLocale
+import com.okugata.moviecatalogue.viewmodel.TvShowDetailViewModel
+import com.okugata.moviecatalogue.viewmodel.ViewModelFactory
 
 class TvShowDetailActivity : AppCompatActivity() {
     companion object {
-        const val EXTRA_TV_SHOW_ID ="extra_tv_show_id"
-        const val EXTRA_TV_SHOW_TITLE ="extra_tv_show_title"
+        const val EXTRA_TV_SHOW_ID = "extra_tv_show_id"
+        const val EXTRA_TV_SHOW_TITLE = "extra_tv_show_title"
     }
 
     private lateinit var binding: ActivityTvShowDetailBinding
     private lateinit var tvShowDetailViewModel: TvShowDetailViewModel
+    private var tvShow: TvShowDetailResponse? = null
     private var tvShowId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +35,10 @@ class TvShowDetailActivity : AppCompatActivity() {
         binding = ActivityTvShowDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        tvShowDetailViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[TvShowDetailViewModel::class.java]
+        tvShowDetailViewModel = ViewModelProvider(
+            this,
+            ViewModelFactory.getInstance()
+        )[TvShowDetailViewModel::class.java]
         tvShowId = intent.getIntExtra(EXTRA_TV_SHOW_ID, 0)
 
         setSupportActionBar(binding.toolbar)
@@ -40,9 +47,11 @@ class TvShowDetailActivity : AppCompatActivity() {
             title = intent.getStringExtra(EXTRA_TV_SHOW_TITLE)
         }
 
-        tvShowDetailViewModel.tvShowDetail.observe(this) { setDetail(it) }
-        tvShowDetailViewModel.isLoading.observe(this) { setLoading(it) }
-        tvShowDetailViewModel.getTvShowDetail(tvShowId)
+        setLoading(true)
+        tvShowDetailViewModel.getTvShowDetail(tvShowId).observe(this) { tvShow ->
+            setLoading(false)
+            tvShow?.let { setDetail(it) }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -51,7 +60,7 @@ class TvShowDetailActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             android.R.id.home -> finish()
             R.id.share -> shareTvShow()
         }
@@ -63,7 +72,7 @@ class TvShowDetailActivity : AppCompatActivity() {
             action = Intent.ACTION_SEND
             putExtra(
                 Intent.EXTRA_TEXT,
-                getString(R.string.share_tv_show,tvShowDetailViewModel.tvShowDetail.value?.name)
+                getString(R.string.share_tv_show, tvShow?.name)
             )
             type = "text/plain"
         }
@@ -72,6 +81,7 @@ class TvShowDetailActivity : AppCompatActivity() {
     }
 
     private fun setDetail(tvShow: TvShowDetailResponse) {
+        this.tvShow = tvShow
         supportActionBar?.title = tvShow.name
         with(binding) {
             Glide.with(this@TvShowDetailActivity)
@@ -79,11 +89,17 @@ class TvShowDetailActivity : AppCompatActivity() {
                 .placeholder(ColorDrawable(Color.GRAY))
                 .into(imagePoster)
             textTitle.text = tvShow.name
-            textDate.text = tvShow.firstAirDate
+            textDate.text = DeviceLocale.convertDate(tvShow.firstAirDate)
             textOverview.text = tvShow.overview
-            val episode = resources.getQuantityString(R.plurals.numberOfEpisode, tvShow.numberOfEpisodes, tvShow.numberOfEpisodes)
-            textDetail.text = getString(R.string.separator_3, "\u2022",
-                tvShow.getGenres(), episode, tvShow.status)
+            val episode = resources.getQuantityString(
+                R.plurals.numberOfEpisode,
+                tvShow.numberOfEpisodes,
+                tvShow.numberOfEpisodes
+            )
+            textDetail.text = getString(
+                R.string.separator_3, "\u2022",
+                tvShow.getGenres(), episode, tvShow.status
+            )
         }
     }
 

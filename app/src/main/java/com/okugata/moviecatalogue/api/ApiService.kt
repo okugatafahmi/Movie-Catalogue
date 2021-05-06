@@ -1,9 +1,9 @@
 package com.okugata.moviecatalogue.api
 
-import com.okugata.moviecatalogue.data.MovieDetailResponse
-import com.okugata.moviecatalogue.data.PopularMovieResponse
-import com.okugata.moviecatalogue.data.PopularTvShowResponse
-import com.okugata.moviecatalogue.data.TvShowDetailResponse
+import com.okugata.moviecatalogue.data.source.remote.response.MovieDetailResponse
+import com.okugata.moviecatalogue.data.source.remote.response.PopularMovieResponse
+import com.okugata.moviecatalogue.data.source.remote.response.PopularTvShowResponse
+import com.okugata.moviecatalogue.data.source.remote.response.TvShowDetailResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

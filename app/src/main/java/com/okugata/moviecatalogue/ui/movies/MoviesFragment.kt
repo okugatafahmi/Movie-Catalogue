@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.okugata.moviecatalogue.databinding.FragmentMoviesBinding
+import com.okugata.moviecatalogue.viewmodel.PopularMovieViewModel
+import com.okugata.moviecatalogue.viewmodel.ViewModelFactory
 
 class MoviesFragment : Fragment() {
     private lateinit var binding: FragmentMoviesBinding
@@ -21,7 +23,7 @@ class MoviesFragment : Fragment() {
         binding = FragmentMoviesBinding.inflate(layoutInflater, container, false)
         popularMovieViewModel = ViewModelProvider(
             this,
-            ViewModelProvider.NewInstanceFactory()
+            ViewModelFactory.getInstance()
         )[PopularMovieViewModel::class.java]
         return binding.root
     }
@@ -36,14 +38,11 @@ class MoviesFragment : Fragment() {
                 adapter = movieAdapter
             }
 
-            popularMovieViewModel.popularMovies.observe(viewLifecycleOwner) {
-                movieAdapter.setMovies(it)
+            binding.progressBar.visibility = View.VISIBLE
+            popularMovieViewModel.getPopularMovie().observe(viewLifecycleOwner) { list ->
+                binding.progressBar.visibility = View.GONE
+                list?.let { movieAdapter.setMovies(it) }
             }
-            popularMovieViewModel.isLoading.observe(viewLifecycleOwner) {
-                binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
-            }
-
-            popularMovieViewModel.getPopularMovies()
         }
     }
 }

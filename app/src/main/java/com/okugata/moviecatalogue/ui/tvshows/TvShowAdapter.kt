@@ -1,12 +1,14 @@
 package com.okugata.moviecatalogue.ui.tvshows
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.api.ApiConfig.IMAGE_BASE_URL
-import com.okugata.moviecatalogue.data.PopularTvShow
+import com.okugata.moviecatalogue.data.source.remote.response.PopularTvShow
 import com.okugata.moviecatalogue.databinding.ListItemsBinding
 import com.okugata.moviecatalogue.utils.DeviceLocale
 
@@ -47,6 +49,7 @@ class TvShowAdapter : RecyclerView.Adapter<TvShowAdapter.TvShowViewHolder>() {
                 }
                 Glide.with(itemView.context)
                     .load("$IMAGE_BASE_URL${tvShow.posterPath}")
+                    .placeholder(ColorDrawable(Color.GRAY))
                     .into(imgPoster)
             }
         }

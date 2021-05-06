@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.api.ApiConfig.IMAGE_BASE_URL
-import com.okugata.moviecatalogue.data.PopularMovie
+import com.okugata.moviecatalogue.data.source.remote.response.PopularMovie
 import com.okugata.moviecatalogue.databinding.ListItemsBinding
 import com.okugata.moviecatalogue.utils.DeviceLocale
 import kotlin.collections.ArrayList

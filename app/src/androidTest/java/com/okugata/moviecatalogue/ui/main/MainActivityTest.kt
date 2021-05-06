@@ -8,8 +8,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.okugata.moviecatalogue.R
-import com.okugata.moviecatalogue.data.PopularMovie
-import com.okugata.moviecatalogue.data.PopularTvShow
+import com.okugata.moviecatalogue.data.source.remote.response.PopularMovie
+import com.okugata.moviecatalogue.data.source.remote.response.PopularTvShow
 import org.junit.Before
 import org.junit.Test
 import java.util.*

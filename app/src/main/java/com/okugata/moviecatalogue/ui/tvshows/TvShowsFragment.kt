@@ -8,14 +8,23 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.okugata.moviecatalogue.databinding.FragmentTvShowsBinding
+import com.okugata.moviecatalogue.viewmodel.PopularTvShowViewModel
+import com.okugata.moviecatalogue.viewmodel.ViewModelFactory
 
 class TvShowsFragment : Fragment() {
     private lateinit var binding: FragmentTvShowsBinding
     private lateinit var popularTvShowViewModel: PopularTvShowViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentTvShowsBinding.inflate(layoutInflater, container, false)
-        popularTvShowViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[PopularTvShowViewModel::class.java]
+        popularTvShowViewModel = ViewModelProvider(
+            this,
+            ViewModelFactory.getInstance()
+        )[PopularTvShowViewModel::class.java]
         return binding.root
     }
 
@@ -29,14 +38,11 @@ class TvShowsFragment : Fragment() {
                 adapter = tvShowAdapter
             }
 
-            popularTvShowViewModel.popularTvShows.observe(viewLifecycleOwner) {
-                tvShowAdapter.setTvShows(it)
+            binding.progressBar.visibility = View.VISIBLE
+            popularTvShowViewModel.getPopularTvShows().observe(viewLifecycleOwner) { list ->
+                binding.progressBar.visibility = View.GONE
+                list?.let { tvShowAdapter.setTvShows(it) }
             }
-            popularTvShowViewModel.isLoading.observe(viewLifecycleOwner) {
-                binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
-            }
-
-            popularTvShowViewModel.getPopularTvShows()
         }
     }
 }

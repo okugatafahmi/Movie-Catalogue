@@ -12,9 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.R
 import com.okugata.moviecatalogue.api.ApiConfig
-import com.okugata.moviecatalogue.data.MovieDetailResponse
+import com.okugata.moviecatalogue.data.source.remote.response.MovieDetailResponse
 import com.okugata.moviecatalogue.databinding.ActivityMovieDetailBinding
 import com.okugata.moviecatalogue.utils.DeviceLocale
+import com.okugata.moviecatalogue.viewmodel.MovieDetailViewModel
+import com.okugata.moviecatalogue.viewmodel.ViewModelFactory
 
 class MovieDetailActivity : AppCompatActivity() {
     companion object {
@@ -24,6 +26,7 @@ class MovieDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMovieDetailBinding
     private lateinit var movieDetailViewModel: MovieDetailViewModel
+    private var movie: MovieDetailResponse? = null
     private var movieId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +37,7 @@ class MovieDetailActivity : AppCompatActivity() {
 
         movieDetailViewModel = ViewModelProvider(
             this,
-            ViewModelProvider.NewInstanceFactory()
+            ViewModelFactory.getInstance()
         )[MovieDetailViewModel::class.java]
         movieId = intent.getIntExtra(EXTRA_MOVIE_ID, 0)
 
@@ -44,9 +47,11 @@ class MovieDetailActivity : AppCompatActivity() {
             title = intent.getStringExtra(EXTRA_MOVIE_TITLE)
         }
 
-        movieDetailViewModel.movieDetail.observe(this) { setDetail(it) }
-        movieDetailViewModel.isLoading.observe(this) { setLoading(it) }
-        movieDetailViewModel.getMovieDetail(movieId)
+        setLoading(true)
+        movieDetailViewModel.getMovieDetail(movieId).observe(this) { movie ->
+            setLoading(false)
+            movie?.let { setDetail(it) }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -67,7 +72,10 @@ class MovieDetailActivity : AppCompatActivity() {
             action = Intent.ACTION_SEND
             putExtra(
                 Intent.EXTRA_TEXT,
-                getString(R.string.share_movie, movieDetailViewModel.movieDetail.value?.title)
+                getString(
+                    R.string.share_movie,
+                    movie?.title
+                )
             )
             type = "text/plain"
         }
@@ -76,6 +84,7 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private fun setDetail(movie: MovieDetailResponse) {
+        this.movie = movie
         supportActionBar?.title = movie.title
         with(binding) {
             Glide.with(this@MovieDetailActivity)
@@ -85,8 +94,10 @@ class MovieDetailActivity : AppCompatActivity() {
             textTitle.text = movie.title
             textDate.text = DeviceLocale.convertDate(movie.releaseDate)
             textOverview.text = movie.overview
-            textDetail.text = getString(R.string.separator_2, "\u2022",
-                movie.getGenres(), "${movie.runtime} minutes")
+            textDetail.text = getString(
+                R.string.separator_2, "\u2022",
+                movie.getGenres(), "${movie.runtime} minutes"
+            )
         }
     }
 

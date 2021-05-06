@@ -1,5 +1,6 @@
 package com.okugata.moviecatalogue.ui.movies
 
+import com.okugata.moviecatalogue.viewmodel.PopularMovieViewModel
 import org.junit.Before
 import org.junit.Test
 
