@@ -26,14 +26,11 @@ class ViewModelFactory private constructor(private val catalogueRepository: Cata
             modelClass.isAssignableFrom(PopularMovieViewModel::class.java) -> {
                 PopularMovieViewModel(catalogueRepository) as T
             }
-            modelClass.isAssignableFrom(MovieDetailViewModel::class.java) -> {
-                MovieDetailViewModel(catalogueRepository) as T
-            }
             modelClass.isAssignableFrom(PopularTvShowViewModel::class.java) -> {
                 PopularTvShowViewModel(catalogueRepository) as T
             }
-            modelClass.isAssignableFrom(TvShowDetailViewModel::class.java) -> {
-                TvShowDetailViewModel(catalogueRepository) as T
+            modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
+                DetailViewModel(catalogueRepository) as T
             }
             else -> throw Throwable("Unknown ViewModel class: " + modelClass.name)
         }

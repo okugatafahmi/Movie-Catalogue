@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.okugata.moviecatalogue">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -13,10 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MovieCatalogue">
         <activity
-            android:name=".ui.tvshows.TvShowDetailActivity"
-            android:theme="@style/Theme.MovieCatalogue.NoActionBar" />
-        <activity
-            android:name=".ui.movies.MovieDetailActivity"
+            android:name=".ui.detail.DetailActivity"
             android:theme="@style/Theme.MovieCatalogue.NoActionBar" />
         <activity android:name=".ui.main.MainActivity">
             <intent-filter>

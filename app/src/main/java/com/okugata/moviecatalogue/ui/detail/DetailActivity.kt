@@ -1,4 +1,4 @@
-package com.okugata.moviecatalogue.ui.tvshows
+package com.okugata.moviecatalogue.ui.detail
 
 import android.content.Intent
 import android.graphics.Color
@@ -11,46 +11,58 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.R
-import com.okugata.moviecatalogue.api.ApiConfig
+import com.okugata.moviecatalogue.api.ApiConfig.IMAGE_BASE_URL
+import com.okugata.moviecatalogue.data.source.remote.response.MovieDetailResponse
 import com.okugata.moviecatalogue.data.source.remote.response.TvShowDetailResponse
-import com.okugata.moviecatalogue.databinding.ActivityTvShowDetailBinding
-import com.okugata.moviecatalogue.utils.DeviceLocale
-import com.okugata.moviecatalogue.viewmodel.TvShowDetailViewModel
+import com.okugata.moviecatalogue.databinding.ActivityDetailBinding
+import com.okugata.moviecatalogue.utils.DeviceLocale.convertDate
+import com.okugata.moviecatalogue.viewmodel.DetailViewModel
 import com.okugata.moviecatalogue.viewmodel.ViewModelFactory
 
-class TvShowDetailActivity : AppCompatActivity() {
+class DetailActivity : AppCompatActivity() {
     companion object {
-        const val EXTRA_TV_SHOW_ID = "extra_tv_show_id"
-        const val EXTRA_TV_SHOW_TITLE = "extra_tv_show_title"
+        const val EXTRA_ID = "extra_id"
+        const val EXTRA_TITLE = "extra_title"
+        const val EXTRA_IS_MOVIE = "extra_is_movie"
     }
 
-    private lateinit var binding: ActivityTvShowDetailBinding
-    private lateinit var tvShowDetailViewModel: TvShowDetailViewModel
+    private lateinit var binding: ActivityDetailBinding
+    private lateinit var detailViewModel: DetailViewModel
+    private var isMovie = true
+    private var movie: MovieDetailResponse? = null
     private var tvShow: TvShowDetailResponse? = null
-    private var tvShowId = 0
+    private var id = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityTvShowDetailBinding.inflate(layoutInflater)
+        binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        tvShowDetailViewModel = ViewModelProvider(
+        detailViewModel = ViewModelProvider(
             this,
             ViewModelFactory.getInstance()
-        )[TvShowDetailViewModel::class.java]
-        tvShowId = intent.getIntExtra(EXTRA_TV_SHOW_ID, 0)
+        )[DetailViewModel::class.java]
+        id = intent.getIntExtra(EXTRA_ID, 0)
+        isMovie = intent.getBooleanExtra(EXTRA_IS_MOVIE, true)
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = intent.getStringExtra(EXTRA_TV_SHOW_TITLE)
+            title = intent.getStringExtra(EXTRA_TITLE)
         }
 
         setLoading(true)
-        tvShowDetailViewModel.getTvShowDetail(tvShowId).observe(this) { tvShow ->
-            setLoading(false)
-            tvShow?.let { setDetail(it) }
+        if (isMovie) {
+            detailViewModel.getMovieDetail(id).observe(this) { movie ->
+                setLoading(false)
+                movie?.let { setDetail(it) }
+            }
+        } else {
+            detailViewModel.getTvShowDetail(id).observe(this) { tvShow ->
+                setLoading(false)
+                tvShow?.let { setDetail(it) }
+            }
         }
     }
 
@@ -62,17 +74,21 @@ class TvShowDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> finish()
-            R.id.share -> shareTvShow()
+            R.id.share -> shareItem()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun shareTvShow() {
+    private fun shareItem() {
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(
                 Intent.EXTRA_TEXT,
-                getString(R.string.share_tv_show, tvShow?.name)
+                if (isMovie) {
+                    getString(R.string.share_movie, movie?.title)
+                } else {
+                    getString(R.string.share_tv_show, tvShow?.name)
+                }
             )
             type = "text/plain"
         }
@@ -80,16 +96,34 @@ class TvShowDetailActivity : AppCompatActivity() {
         startActivity(shareIntent)
     }
 
+    private fun setDetail(movie: MovieDetailResponse) {
+        this.movie = movie
+        supportActionBar?.title = movie.title
+        with(binding) {
+            Glide.with(this@DetailActivity)
+                .load("${IMAGE_BASE_URL}${movie.posterPath}")
+                .placeholder(ColorDrawable(Color.GRAY))
+                .into(imagePoster)
+            textTitle.text = movie.title
+            textDate.text = convertDate(movie.releaseDate)
+            textOverview.text = movie.overview
+            textDetail.text = getString(
+                R.string.separator_2, "\u2022",
+                movie.getGenres(), "${movie.runtime} minutes"
+            )
+        }
+    }
+
     private fun setDetail(tvShow: TvShowDetailResponse) {
         this.tvShow = tvShow
         supportActionBar?.title = tvShow.name
         with(binding) {
-            Glide.with(this@TvShowDetailActivity)
-                .load("${ApiConfig.IMAGE_BASE_URL}${tvShow.posterPath}")
+            Glide.with(this@DetailActivity)
+                .load("${IMAGE_BASE_URL}${tvShow.posterPath}")
                 .placeholder(ColorDrawable(Color.GRAY))
                 .into(imagePoster)
             textTitle.text = tvShow.name
-            textDate.text = DeviceLocale.convertDate(tvShow.firstAirDate)
+            textDate.text = convertDate(tvShow.firstAirDate)
             textOverview.text = tvShow.overview
             val episode = resources.getQuantityString(
                 R.plurals.numberOfEpisode,

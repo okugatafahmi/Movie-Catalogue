@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.okugata.moviecatalogue.data.CatalogueRepository
 import com.okugata.moviecatalogue.data.source.remote.response.MovieDetailResponse
+import com.okugata.moviecatalogue.data.source.remote.response.TvShowDetailResponse
 import org.junit.Before
 import org.junit.Test
 import org.junit.Assert.*
@@ -16,7 +17,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class MovieDetailViewModelTest {
+class DetailViewModelTest {
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -25,17 +26,21 @@ class MovieDetailViewModelTest {
     private lateinit var catalogueRepository: CatalogueRepository
 
     @Mock
-    private lateinit var observer: Observer<MovieDetailResponse>
+    private lateinit var observerMovie: Observer<MovieDetailResponse>
+    @Mock
+    private lateinit var observerTvShow: Observer<TvShowDetailResponse>
 
     @Mock
     private lateinit var dummyMovieDetail: MovieDetailResponse
+    @Mock
+    private lateinit var dummyTvShowDetail: TvShowDetailResponse
 
-    private lateinit var movieDetailViewModel: MovieDetailViewModel
+    private lateinit var detailViewModel: DetailViewModel
     private var id = 1
 
     @Before
     fun setUp() {
-        movieDetailViewModel = MovieDetailViewModel(catalogueRepository)
+        detailViewModel = DetailViewModel(catalogueRepository)
     }
 
     @Test
@@ -44,11 +49,25 @@ class MovieDetailViewModelTest {
         movieDetail.value = dummyMovieDetail
 
         `when`(catalogueRepository.getMovieDetail(id)).thenReturn(movieDetail)
-        val movie = movieDetailViewModel.getMovieDetail(id).value
+        val movie = detailViewModel.getMovieDetail(id).value
         verify(catalogueRepository).getMovieDetail(id)
         assertNotNull(movie)
 
-        movieDetailViewModel.getMovieDetail(id).observeForever(observer)
-        verify(observer).onChanged(dummyMovieDetail)
+        detailViewModel.getMovieDetail(id).observeForever(observerMovie)
+        verify(observerMovie).onChanged(dummyMovieDetail)
+    }
+
+    @Test
+    fun getTvShowDetail() {
+        val tvShowDetail = MutableLiveData<TvShowDetailResponse>()
+        tvShowDetail.value = dummyTvShowDetail
+
+        `when`(catalogueRepository.getTvShowDetail(id)).thenReturn(tvShowDetail)
+        val tvShow = detailViewModel.getTvShowDetail(id).value
+        verify(catalogueRepository).getTvShowDetail(id)
+        assertNotNull(tvShow)
+
+        detailViewModel.getTvShowDetail(id).observeForever(observerTvShow)
+        verify(observerTvShow).onChanged(dummyTvShowDetail)
     }
 }

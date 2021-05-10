@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.api.ApiConfig.IMAGE_BASE_URL
 import com.okugata.moviecatalogue.data.source.remote.response.PopularMovie
 import com.okugata.moviecatalogue.databinding.ListItemsBinding
+import com.okugata.moviecatalogue.ui.detail.DetailActivity
 import com.okugata.moviecatalogue.utils.DeviceLocale
 import kotlin.collections.ArrayList
 
@@ -44,9 +45,10 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
                 tvItemTitle.text = movie.title
                 tvItemDate.text = DeviceLocale.convertDate(movie.releaseDate)
                 itemView.setOnClickListener {
-                    val intent = Intent(itemView.context, MovieDetailActivity::class.java).apply {
-                        putExtra(MovieDetailActivity.EXTRA_MOVIE_ID, movie.id)
-                        putExtra(MovieDetailActivity.EXTRA_MOVIE_TITLE, movie.title)
+                    val intent = Intent(itemView.context, DetailActivity::class.java).apply {
+                        putExtra(DetailActivity.EXTRA_ID, movie.id)
+                        putExtra(DetailActivity.EXTRA_TITLE, movie.title)
+                        putExtra(DetailActivity.EXTRA_IS_MOVIE, true)
                     }
                     itemView.context.startActivity(intent)
                 }

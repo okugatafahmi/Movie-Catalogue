@@ -15,8 +15,7 @@ import androidx.test.runner.lifecycle.Stage
 import com.okugata.moviecatalogue.R
 import com.okugata.moviecatalogue.data.source.remote.response.MovieDetailResponse
 import com.okugata.moviecatalogue.data.source.remote.response.TvShowDetailResponse
-import com.okugata.moviecatalogue.ui.movies.MovieDetailActivity
-import com.okugata.moviecatalogue.ui.tvshows.TvShowDetailActivity
+import com.okugata.moviecatalogue.ui.detail.DetailActivity
 import com.okugata.moviecatalogue.utils.DeviceLocale
 import com.okugata.moviecatalogue.utils.EspressoIdlingResource
 import org.junit.After
@@ -69,7 +68,7 @@ class MainActivityTest {
         onView(withId(R.id.text_date)).check(matches(isDisplayed()))
         onView(withId(R.id.text_overview)).check(matches(isDisplayed()))
 
-        (getActivityInstance() as MovieDetailActivity).let { activity ->
+        (getActivityInstance() as DetailActivity).let { activity ->
             val cls = activity.javaClass
             val field = cls.getDeclaredField("movie").apply { isAccessible = true }
             field.get(activity)?.let { movie ->
@@ -108,7 +107,7 @@ class MainActivityTest {
         onView(withId(R.id.text_date)).check(matches(isDisplayed()))
         onView(withId(R.id.text_overview)).check(matches(isDisplayed()))
 
-        (getActivityInstance() as TvShowDetailActivity).let { activity ->
+        (getActivityInstance() as DetailActivity).let { activity ->
             val cls = activity.javaClass
             val field = cls.getDeclaredField("tvShow").apply { isAccessible = true }
             field.get(activity)?.let { tvShow ->

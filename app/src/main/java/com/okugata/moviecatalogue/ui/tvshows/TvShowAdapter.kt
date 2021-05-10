@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.api.ApiConfig.IMAGE_BASE_URL
 import com.okugata.moviecatalogue.data.source.remote.response.PopularTvShow
 import com.okugata.moviecatalogue.databinding.ListItemsBinding
+import com.okugata.moviecatalogue.ui.detail.DetailActivity
 import com.okugata.moviecatalogue.utils.DeviceLocale
 
 class TvShowAdapter : RecyclerView.Adapter<TvShowAdapter.TvShowViewHolder>() {
@@ -41,9 +42,10 @@ class TvShowAdapter : RecyclerView.Adapter<TvShowAdapter.TvShowViewHolder>() {
                 tvItemTitle.text = tvShow.name
                 tvItemDate.text = DeviceLocale.convertDate(tvShow.firstAirDate)
                 itemView.setOnClickListener {
-                    val intent = Intent(itemView.context, TvShowDetailActivity::class.java).apply {
-                        putExtra(TvShowDetailActivity.EXTRA_TV_SHOW_ID, tvShow.id)
-                        putExtra(TvShowDetailActivity.EXTRA_TV_SHOW_TITLE, tvShow.name)
+                    val intent = Intent(itemView.context, DetailActivity::class.java).apply {
+                        putExtra(DetailActivity.EXTRA_ID, tvShow.id)
+                        putExtra(DetailActivity.EXTRA_TITLE, tvShow.name)
+                        putExtra(DetailActivity.EXTRA_IS_MOVIE, false)
                     }
                     itemView.context.startActivity(intent)
                 }
