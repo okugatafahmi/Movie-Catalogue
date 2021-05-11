@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.okugata.moviecatalogue.databinding.FragmentTvShowsBinding
 import com.okugata.moviecatalogue.viewmodel.PopularTvShowViewModel
 import com.okugata.moviecatalogue.viewmodel.ViewModelFactory
+import com.okugata.moviecatalogue.vo.Status
 
 class TvShowsFragment : Fragment() {
     private lateinit var binding: FragmentTvShowsBinding
@@ -23,7 +25,7 @@ class TvShowsFragment : Fragment() {
         binding = FragmentTvShowsBinding.inflate(layoutInflater, container, false)
         popularTvShowViewModel = ViewModelProvider(
             this,
-            ViewModelFactory.getInstance()
+            ViewModelFactory.getInstance(requireActivity())
         )[PopularTvShowViewModel::class.java]
         return binding.root
     }
@@ -38,10 +40,21 @@ class TvShowsFragment : Fragment() {
                 adapter = tvShowAdapter
             }
 
-            binding.progressBar.visibility = View.VISIBLE
-            popularTvShowViewModel.getPopularTvShow().observe(viewLifecycleOwner) { list ->
-                binding.progressBar.visibility = View.GONE
-                list?.let { tvShowAdapter.setTvShows(it) }
+            popularTvShowViewModel.getPopularTvShow().observe(viewLifecycleOwner) { movies ->
+                if (movies != null) {
+                    when (movies.status) {
+                        Status.LOADING -> binding.progressBar.visibility = View.VISIBLE
+                        Status.SUCCESS -> {
+                            binding.progressBar.visibility = View.GONE
+                            movies.data?.let { tvShowAdapter.setTvShows(it) }
+                        }
+                        Status.ERROR -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(requireContext(), "There is error", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+                }
             }
         }
     }

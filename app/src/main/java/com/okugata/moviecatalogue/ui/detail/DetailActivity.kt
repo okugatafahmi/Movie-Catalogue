@@ -8,16 +8,18 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.R
 import com.okugata.moviecatalogue.api.ApiConfig.IMAGE_BASE_URL
-import com.okugata.moviecatalogue.data.source.remote.response.MovieDetailResponse
-import com.okugata.moviecatalogue.data.source.remote.response.TvShowDetailResponse
+import com.okugata.moviecatalogue.data.source.local.entity.MovieDetailEntity
+import com.okugata.moviecatalogue.data.source.local.entity.TvShowDetailEntity
 import com.okugata.moviecatalogue.databinding.ActivityDetailBinding
 import com.okugata.moviecatalogue.utils.DeviceLocale.convertDate
 import com.okugata.moviecatalogue.viewmodel.DetailViewModel
 import com.okugata.moviecatalogue.viewmodel.ViewModelFactory
+import com.okugata.moviecatalogue.vo.Status
 
 class DetailActivity : AppCompatActivity() {
     companion object {
@@ -29,8 +31,8 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
     private lateinit var detailViewModel: DetailViewModel
     private var isMovie = true
-    private var movie: MovieDetailResponse? = null
-    private var tvShow: TvShowDetailResponse? = null
+    private var movie: MovieDetailEntity? = null
+    private var tvShow: TvShowDetailEntity? = null
     private var id = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +43,7 @@ class DetailActivity : AppCompatActivity() {
 
         detailViewModel = ViewModelProvider(
             this,
-            ViewModelFactory.getInstance()
+            ViewModelFactory.getInstance(this)
         )[DetailViewModel::class.java]
         id = intent.getIntExtra(EXTRA_ID, 0)
         isMovie = intent.getBooleanExtra(EXTRA_IS_MOVIE, true)
@@ -52,16 +54,37 @@ class DetailActivity : AppCompatActivity() {
             title = intent.getStringExtra(EXTRA_TITLE)
         }
 
-        setLoading(true)
         if (isMovie) {
             detailViewModel.getMovieDetail(id).observe(this) { movie ->
-                setLoading(false)
-                movie?.let { setDetail(it) }
+                if (movie != null) {
+                    when (movie.status) {
+                        Status.LOADING -> setLoading(true)
+                        Status.SUCCESS -> {
+                            setLoading(false)
+                            movie.data?.let { setDetail(it) }
+                        }
+                        Status.ERROR -> {
+                            setLoading(false)
+                            Toast.makeText(this, "There is error", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             }
         } else {
             detailViewModel.getTvShowDetail(id).observe(this) { tvShow ->
-                setLoading(false)
-                tvShow?.let { setDetail(it) }
+                if (tvShow != null) {
+                    when (tvShow.status) {
+                        Status.LOADING -> setLoading(true)
+                        Status.SUCCESS -> {
+                            setLoading(false)
+                            tvShow.data?.let { setDetail(it) }
+                        }
+                        Status.ERROR -> {
+                            setLoading(false)
+                            Toast.makeText(this, "There is error", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             }
         }
     }
@@ -96,7 +119,7 @@ class DetailActivity : AppCompatActivity() {
         startActivity(shareIntent)
     }
 
-    private fun setDetail(movie: MovieDetailResponse) {
+    private fun setDetail(movie: MovieDetailEntity) {
         this.movie = movie
         supportActionBar?.title = movie.title
         with(binding) {
@@ -109,12 +132,12 @@ class DetailActivity : AppCompatActivity() {
             textOverview.text = movie.overview
             textDetail.text = getString(
                 R.string.separator_2, "\u2022",
-                movie.getGenres(), "${movie.runtime} minutes"
+                movie.genres, "${movie.runtime} minutes"
             )
         }
     }
 
-    private fun setDetail(tvShow: TvShowDetailResponse) {
+    private fun setDetail(tvShow: TvShowDetailEntity) {
         this.tvShow = tvShow
         supportActionBar?.title = tvShow.name
         with(binding) {
@@ -132,7 +155,7 @@ class DetailActivity : AppCompatActivity() {
             )
             textDetail.text = getString(
                 R.string.separator_3, "\u2022",
-                tvShow.getGenres(), episode, tvShow.status
+                tvShow.genres, episode, tvShow.status
             )
         }
     }

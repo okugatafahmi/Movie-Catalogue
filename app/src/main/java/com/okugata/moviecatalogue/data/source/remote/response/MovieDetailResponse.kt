@@ -20,7 +20,7 @@ data class MovieDetailResponse(
 	val runtime: Int,
 
 	@field:SerializedName("poster_path")
-	val posterPath: Any,
+	val posterPath: String,
 
 	@field:SerializedName("release_date")
 	val releaseDate: String

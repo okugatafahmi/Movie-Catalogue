@@ -1,5 +1,7 @@
 package com.okugata.moviecatalogue.data.source.remote
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.okugata.moviecatalogue.api.ApiConfig
 import com.okugata.moviecatalogue.data.source.remote.response.MovieDetailResponse
 import com.okugata.moviecatalogue.data.source.remote.response.PopularMovieResponse
@@ -22,7 +24,9 @@ class RemoteDataSource private constructor() {
             }
     }
 
-    fun getPopularMovie(callback: (String?, PopularMovieResponse?) -> Unit) {
+    fun getPopularMovie(): LiveData<ApiResponse<PopularMovieResponse>> {
+        val popularMovie = MutableLiveData<ApiResponse<PopularMovieResponse>>()
+
         val client = ApiConfig.getApiService()
             .getPopularMovie(DeviceLocale.getLanguage())
         EspressoIdlingResource.increment()
@@ -32,22 +36,30 @@ class RemoteDataSource private constructor() {
                 response: Response<PopularMovieResponse>
             ) {
                 if (response.isSuccessful) {
-                    callback(null, response.body())
+                    if (response.body() != null) {
+                        popularMovie.value = ApiResponse.success(response.body())
+                    } else {
+                        popularMovie.value = ApiResponse.empty(response.message(), response.body())
+                    }
                 } else {
-                    callback("onFailure: ${response.message()}", null)
+                    popularMovie.value = ApiResponse.error(response.message(), null)
                 }
                 EspressoIdlingResource.decrement()
             }
 
             override fun onFailure(call: Call<PopularMovieResponse>, t: Throwable) {
-                callback("onFailure: ${t.message.toString()}", null)
+                popularMovie.value = ApiResponse.error(t.message.toString(), null)
                 EspressoIdlingResource.decrement()
             }
 
         })
+
+        return popularMovie
     }
 
-    fun getMovieDetail(id: Int, callback: (String?, MovieDetailResponse?) -> Unit) {
+    fun getMovieDetail(id: Int): LiveData<ApiResponse<MovieDetailResponse>> {
+         val movieDetail = MutableLiveData<ApiResponse<MovieDetailResponse>>()
+
         val client = ApiConfig.getApiService()
             .getMovieDetail(id, DeviceLocale.getLanguage())
         EspressoIdlingResource.increment()
@@ -57,22 +69,31 @@ class RemoteDataSource private constructor() {
                 response: Response<MovieDetailResponse>
             ) {
                 if (response.isSuccessful) {
-                    callback(null, response.body())
+                    if (response.body() != null) {
+                        movieDetail.value = ApiResponse.success(response.body())
+                    } else {
+                        movieDetail.value = ApiResponse.empty(response.message(), response.body())
+                    }
                 } else {
-                    callback("onFailure: ${response.message()}", null)
+                    movieDetail.value = ApiResponse.error(response.message(), null)
                 }
+
                 EspressoIdlingResource.decrement()
             }
 
             override fun onFailure(call: Call<MovieDetailResponse>, t: Throwable) {
-                callback("onFailure: ${t.message.toString()}", null)
+                movieDetail.value = ApiResponse.error(t.message.toString(), null)
                 EspressoIdlingResource.decrement()
             }
 
         })
+
+        return movieDetail
     }
 
-    fun getPopularTvShow(callback: (String?, PopularTvShowResponse?) -> Unit) {
+    fun getPopularTvShow(): LiveData<ApiResponse<PopularTvShowResponse>> {
+        val popularTvShow = MutableLiveData<ApiResponse<PopularTvShowResponse>>()
+
         val client = ApiConfig.getApiService()
             .getPopularTvShow(DeviceLocale.getLanguage())
         EspressoIdlingResource.increment()
@@ -82,22 +103,30 @@ class RemoteDataSource private constructor() {
                 response: Response<PopularTvShowResponse>
             ) {
                 if (response.isSuccessful) {
-                    callback(null, response.body())
+                    if (response.body() != null) {
+                        popularTvShow.value = ApiResponse.success(response.body())
+                    } else {
+                        popularTvShow.value = ApiResponse.empty(response.message(), response.body())
+                    }
                 } else {
-                    callback("onFailure: ${response.message()}", null)
+                    popularTvShow.value = ApiResponse.error(response.message(), null)
                 }
                 EspressoIdlingResource.decrement()
             }
 
             override fun onFailure(call: Call<PopularTvShowResponse>, t: Throwable) {
-                callback("onFailure: ${t.message.toString()}", null)
+                popularTvShow.value = ApiResponse.error(t.message.toString(), null)
                 EspressoIdlingResource.decrement()
             }
 
         })
+
+        return popularTvShow
     }
 
-    fun getTvShowDetail(id: Int, callback: (String?, TvShowDetailResponse?) -> Unit) {
+    fun getTvShowDetail(id: Int): LiveData<ApiResponse<TvShowDetailResponse>> {
+        val tvShowDetail = MutableLiveData<ApiResponse<TvShowDetailResponse>>()
+
         val client = ApiConfig.getApiService()
             .getTvShowDetail(id, DeviceLocale.getLanguage())
         EspressoIdlingResource.increment()
@@ -107,18 +136,25 @@ class RemoteDataSource private constructor() {
                 response: Response<TvShowDetailResponse>
             ) {
                 if (response.isSuccessful) {
-                    callback(null, response.body())
+                    if (response.body() != null) {
+                        tvShowDetail.value = ApiResponse.success(response.body())
+                    } else {
+                        tvShowDetail.value = ApiResponse.empty(response.message(), response.body())
+                    }
                 } else {
-                    callback("onFailure: ${response.message()}", null)
+                    tvShowDetail.value = ApiResponse.error(response.message(), null)
                 }
+
                 EspressoIdlingResource.decrement()
             }
 
             override fun onFailure(call: Call<TvShowDetailResponse>, t: Throwable) {
-                callback("onFailure: ${t.message.toString()}", null)
+                tvShowDetail.value = ApiResponse.error(t.message.toString(), null)
                 EspressoIdlingResource.decrement()
             }
 
         })
+
+        return tvShowDetail
     }
 }

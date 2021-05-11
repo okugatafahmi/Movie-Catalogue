@@ -8,16 +8,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.api.ApiConfig.IMAGE_BASE_URL
-import com.okugata.moviecatalogue.data.source.remote.response.PopularMovie
+import com.okugata.moviecatalogue.data.source.local.entity.PopularMovieEntity
 import com.okugata.moviecatalogue.databinding.ListItemsBinding
 import com.okugata.moviecatalogue.ui.detail.DetailActivity
 import com.okugata.moviecatalogue.utils.DeviceLocale
 import kotlin.collections.ArrayList
 
 class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
-    private var listMovies = ArrayList<PopularMovie>()
+    private var listMovies = ArrayList<PopularMovieEntity>()
 
-    fun setMovies(movies: List<PopularMovie>?) {
+    fun setMovies(movies: List<PopularMovieEntity>?) {
         movies?.let {
             listMovies.clear()
             listMovies.addAll(it)
@@ -40,7 +40,7 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     class MovieViewHolder(private val binding: ListItemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: PopularMovie) {
+        fun bind(movie: PopularMovieEntity) {
             with(binding) {
                 tvItemTitle.text = movie.title
                 tvItemDate.text = DeviceLocale.convertDate(movie.releaseDate)

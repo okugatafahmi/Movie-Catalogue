@@ -8,15 +8,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.api.ApiConfig.IMAGE_BASE_URL
-import com.okugata.moviecatalogue.data.source.remote.response.PopularTvShow
+import com.okugata.moviecatalogue.data.source.local.entity.PopularTvShowEntity
 import com.okugata.moviecatalogue.databinding.ListItemsBinding
 import com.okugata.moviecatalogue.ui.detail.DetailActivity
 import com.okugata.moviecatalogue.utils.DeviceLocale
 
 class TvShowAdapter : RecyclerView.Adapter<TvShowAdapter.TvShowViewHolder>() {
-    private var listTvShows = ArrayList<PopularTvShow>()
+    private var listTvShows = ArrayList<PopularTvShowEntity>()
 
-    fun setTvShows(tvShows: List<PopularTvShow>) {
+    fun setTvShows(tvShows: List<PopularTvShowEntity>) {
         listTvShows.clear()
         listTvShows.addAll(tvShows)
         notifyDataSetChanged()
@@ -37,7 +37,7 @@ class TvShowAdapter : RecyclerView.Adapter<TvShowAdapter.TvShowViewHolder>() {
 
     class TvShowViewHolder(private val binding: ListItemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(tvShow: PopularTvShow) {
+        fun bind(tvShow: PopularTvShowEntity) {
             with(binding) {
                 tvItemTitle.text = tvShow.name
                 tvItemDate.text = DeviceLocale.convertDate(tvShow.firstAirDate)

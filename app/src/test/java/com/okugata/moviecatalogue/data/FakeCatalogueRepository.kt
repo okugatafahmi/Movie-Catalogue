@@ -14,7 +14,7 @@ class FakeCatalogueRepository(private val remoteDataSource: RemoteDataSource): C
         const val TAG = "FakeCatalogueRepository"
     }
 
-    override fun getPopularMovie(): LiveData<List<PopularMovie>> {
+    override fun getPopularMovies(): LiveData<List<PopularMovie>> {
         val popularMovie = MutableLiveData<List<PopularMovie>>()
         remoteDataSource.getPopularMovie { failureMessage, popularMovieResponse ->
             if (failureMessage != null) {
@@ -42,7 +42,7 @@ class FakeCatalogueRepository(private val remoteDataSource: RemoteDataSource): C
         return movieDetail
     }
 
-    override fun getPopularTvShow(): LiveData<List<PopularTvShow>> {
+    override fun getPopularTvShows(): LiveData<List<PopularTvShow>> {
         val popularTvShow = MutableLiveData<List<PopularTvShow>>()
         remoteDataSource.getPopularTvShow { failureMessage, popularTvShowResponse ->
             if (failureMessage != null) {
