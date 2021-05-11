@@ -9,7 +9,11 @@ import com.okugata.moviecatalogue.R
 import com.okugata.moviecatalogue.ui.movies.MoviesFragment
 import com.okugata.moviecatalogue.ui.tvshows.TvShowsFragment
 
-class SectionsPagerAdapter(private val mContext: Context, fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class SectionsPagerAdapter(
+    private val mContext: Context,
+    fm: FragmentManager,
+    private val isFavorite: Boolean = false
+) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     companion object {
         @StringRes
@@ -18,12 +22,13 @@ class SectionsPagerAdapter(private val mContext: Context, fm: FragmentManager) :
 
     override fun getItem(position: Int): Fragment =
         when (position) {
-            0 -> MoviesFragment()
-            1 -> TvShowsFragment()
+            0 -> MoviesFragment(isFavorite)
+            1 -> TvShowsFragment(isFavorite)
             else -> Fragment()
         }
 
-    override fun getPageTitle(position: Int): CharSequence = mContext.resources.getString(TAB_TITLES[position])
+    override fun getPageTitle(position: Int): CharSequence =
+        mContext.resources.getString(TAB_TITLES[position])
 
     override fun getCount(): Int = TAB_TITLES.size
 

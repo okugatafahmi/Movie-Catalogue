@@ -16,7 +16,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class PopularMovieViewModelTest {
+class MovieViewModelTest {
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -27,11 +27,11 @@ class PopularMovieViewModelTest {
     @Mock
     private lateinit var observer: Observer<List<PopularMovie>>
 
-    private lateinit var popularMovieViewModel: PopularMovieViewModel
+    private lateinit var movieViewModel: MovieViewModel
 
     @Before
     fun setUp() {
-        popularMovieViewModel = PopularMovieViewModel(catalogueRepository)
+        movieViewModel = MovieViewModel(catalogueRepository)
     }
 
     @Test
@@ -41,11 +41,11 @@ class PopularMovieViewModelTest {
         popularMovie.value = dummyPopularMovie
 
         `when`(catalogueRepository.getPopularMovie()).thenReturn(popularMovie)
-        val movies = popularMovieViewModel.getPopularMovie().value
+        val movies = movieViewModel.getPopularMovie().value
         verify(catalogueRepository).getPopularMovie()
         assertNotNull(movies)
 
-        popularMovieViewModel.getPopularMovie().observeForever(observer)
+        movieViewModel.getPopularMovie().observeForever(observer)
         verify(observer).onChanged(dummyPopularMovie)
     }
 }

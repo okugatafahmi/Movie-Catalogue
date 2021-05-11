@@ -8,14 +8,18 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.okugata.moviecatalogue.data.source.local.entity.PopularTvShowEntity
 import com.okugata.moviecatalogue.databinding.FragmentTvShowsBinding
-import com.okugata.moviecatalogue.viewmodel.PopularTvShowViewModel
+import com.okugata.moviecatalogue.viewmodel.TvShowViewModel
 import com.okugata.moviecatalogue.viewmodel.ViewModelFactory
 import com.okugata.moviecatalogue.vo.Status
+import java.util.*
 
-class TvShowsFragment : Fragment() {
+class TvShowsFragment(
+    private val isFavorite: Boolean
+) : Fragment() {
     private lateinit var binding: FragmentTvShowsBinding
-    private lateinit var popularTvShowViewModel: PopularTvShowViewModel
+    private lateinit var tvShowViewModel: TvShowViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,10 +27,10 @@ class TvShowsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTvShowsBinding.inflate(layoutInflater, container, false)
-        popularTvShowViewModel = ViewModelProvider(
+        tvShowViewModel = ViewModelProvider(
             this,
             ViewModelFactory.getInstance(requireActivity())
-        )[PopularTvShowViewModel::class.java]
+        )[TvShowViewModel::class.java]
         return binding.root
     }
 
@@ -40,18 +44,39 @@ class TvShowsFragment : Fragment() {
                 adapter = tvShowAdapter
             }
 
-            popularTvShowViewModel.getPopularTvShow().observe(viewLifecycleOwner) { movies ->
-                if (movies != null) {
-                    when (movies.status) {
-                        Status.LOADING -> binding.progressBar.visibility = View.VISIBLE
-                        Status.SUCCESS -> {
-                            binding.progressBar.visibility = View.GONE
-                            movies.data?.let { tvShowAdapter.setTvShows(it) }
+            if (isFavorite) {
+                tvShowViewModel.getFavoriteTvShow().observe(viewLifecycleOwner) { movies ->
+                    if (movies != null) {
+                        val list = LinkedList<PopularTvShowEntity>()
+                        for (item in movies) {
+                            val movie = PopularTvShowEntity(
+                                item.id,
+                                item.name,
+                                item.posterPath,
+                                item.firstAirDate
+                            )
+                            list.add(movie)
                         }
-                        Status.ERROR -> {
-                            binding.progressBar.visibility = View.GONE
-                            Toast.makeText(requireContext(), "There is error", Toast.LENGTH_SHORT)
-                                .show()
+                        tvShowAdapter.setTvShows(list)
+                    }
+                }
+            } else {
+                tvShowViewModel.getPopularTvShow().observe(viewLifecycleOwner) { movies ->
+                    if (movies != null) {
+                        when (movies.status) {
+                            Status.LOADING -> binding.progressBar.visibility = View.VISIBLE
+                            Status.SUCCESS -> {
+                                binding.progressBar.visibility = View.GONE
+                                movies.data?.let { tvShowAdapter.setTvShows(it) }
+                            }
+                            Status.ERROR -> {
+                                binding.progressBar.visibility = View.GONE
+                                Toast.makeText(
+                                    requireContext(),
+                                    "There is error",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
                 }

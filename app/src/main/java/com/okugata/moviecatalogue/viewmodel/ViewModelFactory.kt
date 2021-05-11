@@ -24,11 +24,11 @@ class ViewModelFactory private constructor(private val catalogueRepository: Cata
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
-            modelClass.isAssignableFrom(PopularMovieViewModel::class.java) -> {
-                PopularMovieViewModel(catalogueRepository) as T
+            modelClass.isAssignableFrom(MovieViewModel::class.java) -> {
+                MovieViewModel(catalogueRepository) as T
             }
-            modelClass.isAssignableFrom(PopularTvShowViewModel::class.java) -> {
-                PopularTvShowViewModel(catalogueRepository) as T
+            modelClass.isAssignableFrom(TvShowViewModel::class.java) -> {
+                TvShowViewModel(catalogueRepository) as T
             }
             modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
                 DetailViewModel(catalogueRepository) as T
