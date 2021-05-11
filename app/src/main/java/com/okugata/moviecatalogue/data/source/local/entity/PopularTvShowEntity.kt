@@ -3,7 +3,6 @@ package com.okugata.moviecatalogue.data.source.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = PopularTvShowEntity.TABLE_NAME)
 data class PopularTvShowEntity(

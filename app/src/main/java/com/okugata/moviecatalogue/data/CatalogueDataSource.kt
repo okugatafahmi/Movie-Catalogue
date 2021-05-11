@@ -5,9 +5,6 @@ import com.okugata.moviecatalogue.data.source.local.entity.MovieDetailEntity
 import com.okugata.moviecatalogue.data.source.local.entity.PopularMovieEntity
 import com.okugata.moviecatalogue.data.source.local.entity.PopularTvShowEntity
 import com.okugata.moviecatalogue.data.source.local.entity.TvShowDetailEntity
-import com.okugata.moviecatalogue.data.source.remote.response.MovieDetailResponse
-import com.okugata.moviecatalogue.data.source.remote.response.PopularTvShow
-import com.okugata.moviecatalogue.data.source.remote.response.TvShowDetailResponse
 import com.okugata.moviecatalogue.vo.Resource
 
 interface CatalogueDataSource {

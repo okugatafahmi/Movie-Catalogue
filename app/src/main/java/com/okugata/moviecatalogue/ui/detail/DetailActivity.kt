@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.R
@@ -35,6 +36,8 @@ class DetailActivity : AppCompatActivity() {
     private var tvShow: TvShowDetailEntity? = null
     private var id = 0
 
+    private var menu: Menu? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -53,7 +56,9 @@ class DetailActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
             title = intent.getStringExtra(EXTRA_TITLE)
         }
+    }
 
+    private fun setupViewModel() {
         if (isMovie) {
             detailViewModel.getMovieDetail(id).observe(this) { movie ->
                 if (movie != null) {
@@ -61,7 +66,10 @@ class DetailActivity : AppCompatActivity() {
                         Status.LOADING -> setLoading(true)
                         Status.SUCCESS -> {
                             setLoading(false)
-                            movie.data?.let { setDetail(it) }
+                            movie.data?.let {
+                                setDetail(it)
+                                setFavoriteState(it.favorite)
+                            }
                         }
                         Status.ERROR -> {
                             setLoading(false)
@@ -77,7 +85,10 @@ class DetailActivity : AppCompatActivity() {
                         Status.LOADING -> setLoading(true)
                         Status.SUCCESS -> {
                             setLoading(false)
-                            tvShow.data?.let { setDetail(it) }
+                            tvShow.data?.let {
+                                setDetail(it)
+                                setFavoriteState(it.favorite)
+                            }
                         }
                         Status.ERROR -> {
                             setLoading(false)
@@ -91,6 +102,8 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_detail, menu)
+        this.menu = menu
+        setupViewModel()
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -98,8 +111,25 @@ class DetailActivity : AppCompatActivity() {
         when (item.itemId) {
             android.R.id.home -> finish()
             R.id.share -> shareItem()
+            R.id.favorite -> {
+                if (isMovie) {
+                    movie?.let { detailViewModel.setMovieFavorite(it) }
+                } else {
+                    tvShow?.let { detailViewModel.setTvShowFavorite(it) }
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setFavoriteState(state: Boolean) {
+        val menuItem = menu?.findItem(R.id.favorite)
+        if (state) {
+            menuItem?.icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_white_24dp)
+        } else {
+            menuItem?.icon =
+                ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_white_24dp)
+        }
     }
 
     private fun shareItem() {
