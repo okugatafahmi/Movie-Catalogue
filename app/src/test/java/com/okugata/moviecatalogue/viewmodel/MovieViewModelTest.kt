@@ -4,7 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.okugata.moviecatalogue.data.CatalogueRepository
-import com.okugata.moviecatalogue.data.source.remote.response.PopularMovie
+import com.okugata.moviecatalogue.data.source.local.entity.MovieDetailEntity
+import com.okugata.moviecatalogue.data.source.local.entity.PopularMovieEntity
+import com.okugata.moviecatalogue.vo.Resource
 import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
@@ -25,7 +27,10 @@ class MovieViewModelTest {
     private lateinit var catalogueRepository: CatalogueRepository
 
     @Mock
-    private lateinit var observer: Observer<List<PopularMovie>>
+    private lateinit var observerPopular: Observer<Resource<List<PopularMovieEntity>>>
+
+    @Mock
+    private lateinit var observerFavorite: Observer<List<MovieDetailEntity>>
 
     private lateinit var movieViewModel: MovieViewModel
 
@@ -36,16 +41,31 @@ class MovieViewModelTest {
 
     @Test
     fun getPopularMovie() {
-        val dummyPopularMovie = ArrayList<PopularMovie>()
-        val popularMovie = MutableLiveData<List<PopularMovie>>()
+        val dummyPopularMovie: Resource<List<PopularMovieEntity>> = Resource.success(ArrayList())
+        val popularMovie = MutableLiveData<Resource<List<PopularMovieEntity>>>()
         popularMovie.value = dummyPopularMovie
 
-        `when`(catalogueRepository.getPopularMovie()).thenReturn(popularMovie)
+        `when`(catalogueRepository.getPopularMovies()).thenReturn(popularMovie)
         val movies = movieViewModel.getPopularMovie().value
-        verify(catalogueRepository).getPopularMovie()
+        verify(catalogueRepository).getPopularMovies()
         assertNotNull(movies)
 
-        movieViewModel.getPopularMovie().observeForever(observer)
-        verify(observer).onChanged(dummyPopularMovie)
+        movieViewModel.getPopularMovie().observeForever(observerPopular)
+        verify(observerPopular).onChanged(dummyPopularMovie)
+    }
+
+    @Test
+    fun getFavoriteMovie() {
+        val dummyFavoriteMovie: List<MovieDetailEntity> = ArrayList()
+        val favoriteMovie = MutableLiveData<List<MovieDetailEntity>>()
+        favoriteMovie.value = dummyFavoriteMovie
+
+        `when`(catalogueRepository.getFavoriteMovies()).thenReturn(favoriteMovie)
+        val movies = movieViewModel.getFavoriteMovie().value
+        verify(catalogueRepository).getFavoriteMovies()
+        assertNotNull(movies)
+
+        movieViewModel.getFavoriteMovie().observeForever(observerFavorite)
+        verify(observerFavorite).onChanged(dummyFavoriteMovie)
     }
 }
