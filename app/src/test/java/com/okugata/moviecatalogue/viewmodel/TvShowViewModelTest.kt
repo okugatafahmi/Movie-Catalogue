@@ -3,6 +3,7 @@ package com.okugata.moviecatalogue.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.paging.PagedList
 import com.okugata.moviecatalogue.data.CatalogueRepository
 import com.okugata.moviecatalogue.data.source.local.entity.PopularTvShowEntity
 import com.okugata.moviecatalogue.data.source.local.entity.TvShowDetailEntity
@@ -32,6 +33,8 @@ class TvShowViewModelTest {
     private lateinit var observerFavorite: Observer<List<TvShowDetailEntity>>
 
     private lateinit var tvShowViewModel: TvShowViewModel
+    @Mock
+    private lateinit var pagedList: PagedList<TvShowDetailEntity>
 
     @Before
     fun setUp() {
@@ -55,9 +58,8 @@ class TvShowViewModelTest {
 
     @Test
     fun getFavoriteTvShow() {
-        val dummyFavoriteTvShow: List<TvShowDetailEntity> = ArrayList()
-        val favoriteTvShow = MutableLiveData<List<TvShowDetailEntity>>()
-        favoriteTvShow.value = dummyFavoriteTvShow
+        val favoriteTvShow = MutableLiveData<PagedList<TvShowDetailEntity>>()
+        favoriteTvShow.value = pagedList
 
         Mockito.`when`(catalogueRepository.getFavoriteTvShows()).thenReturn(favoriteTvShow)
         val movies = tvShowViewModel.getFavoriteTvShow().value
@@ -65,6 +67,6 @@ class TvShowViewModelTest {
         assertNotNull(movies)
 
         tvShowViewModel.getFavoriteTvShow().observeForever(observerFavorite)
-        verify(observerFavorite).onChanged(dummyFavoriteTvShow)
+        verify(observerFavorite).onChanged(pagedList)
     }
 }

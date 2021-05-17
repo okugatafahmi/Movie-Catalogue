@@ -3,6 +3,7 @@ package com.okugata.moviecatalogue.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.paging.PagedList
 import com.okugata.moviecatalogue.data.CatalogueRepository
 import com.okugata.moviecatalogue.data.source.local.entity.MovieDetailEntity
 import com.okugata.moviecatalogue.data.source.local.entity.PopularMovieEntity
@@ -33,6 +34,8 @@ class MovieViewModelTest {
     private lateinit var observerFavorite: Observer<List<MovieDetailEntity>>
 
     private lateinit var movieViewModel: MovieViewModel
+    @Mock
+    private lateinit var pagedList: PagedList<MovieDetailEntity>
 
     @Before
     fun setUp() {
@@ -56,9 +59,8 @@ class MovieViewModelTest {
 
     @Test
     fun getFavoriteMovie() {
-        val dummyFavoriteMovie: List<MovieDetailEntity> = ArrayList()
-        val favoriteMovie = MutableLiveData<List<MovieDetailEntity>>()
-        favoriteMovie.value = dummyFavoriteMovie
+        val favoriteMovie = MutableLiveData<PagedList<MovieDetailEntity>>()
+        favoriteMovie.value = pagedList
 
         `when`(catalogueRepository.getFavoriteMovies()).thenReturn(favoriteMovie)
         val movies = movieViewModel.getFavoriteMovie().value
@@ -66,6 +68,6 @@ class MovieViewModelTest {
         assertNotNull(movies)
 
         movieViewModel.getFavoriteMovie().observeForever(observerFavorite)
-        verify(observerFavorite).onChanged(dummyFavoriteMovie)
+        verify(observerFavorite).onChanged(pagedList)
     }
 }

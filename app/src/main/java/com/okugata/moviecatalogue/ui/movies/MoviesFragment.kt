@@ -44,7 +44,7 @@ class MoviesFragment(
                 }
                 movieViewModel.getFavoriteMovie().observe(viewLifecycleOwner) { movies ->
                     if (movies != null) {
-                        movieAdapter.submitData(viewLifecycleOwner.lifecycle, movies)
+                        movieAdapter.submitList(movies)
                     }
                 }
             } else {

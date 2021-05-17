@@ -1,6 +1,8 @@
 package com.okugata.moviecatalogue.data
 
 import androidx.lifecycle.LiveData
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.okugata.moviecatalogue.data.source.local.LocalDataSource
 import com.okugata.moviecatalogue.data.source.local.entity.MovieDetailEntity
 import com.okugata.moviecatalogue.data.source.local.entity.PopularMovieEntity
@@ -146,11 +148,23 @@ class FakeCatalogueRepository constructor(
 
     }
 
-    override fun getFavoriteMovies(): LiveData<List<MovieDetailEntity>> =
-        localDataSource.getFavoriteMovies()
+    override fun getFavoriteMovies(): LiveData<PagedList<MovieDetailEntity>> {
+        val config = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setInitialLoadSizeHint(4)
+            .setPageSize(4)
+            .build()
+        return LivePagedListBuilder(localDataSource.getFavoriteMovies(), config).build()
+    }
 
-    override fun getFavoriteTvShows(): LiveData<List<TvShowDetailEntity>> =
-        localDataSource.getFavoriteTvShows()
+    override fun getFavoriteTvShows(): LiveData<PagedList<TvShowDetailEntity>> {
+        val config = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setInitialLoadSizeHint(4)
+            .setPageSize(4)
+            .build()
+        return LivePagedListBuilder(localDataSource.getFavoriteTvShows(), config).build()
+    }
 
     override fun setMovieFavorite(movie: MovieDetailEntity, newState: Boolean) =
         appExecutors.diskIO().execute { localDataSource.setMovieFavorite(movie, newState) }

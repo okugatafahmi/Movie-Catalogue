@@ -5,7 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagingDataAdapter
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -16,7 +16,7 @@ import com.okugata.moviecatalogue.ui.detail.DetailActivity
 import com.okugata.moviecatalogue.utils.DeviceLocale
 
 class FavoriteMovieAdapter :
-    PagingDataAdapter<MovieDetailEntity, FavoriteMovieAdapter.MovieViewHolder>(DIFF_CALLBACK) {
+    PagedListAdapter<MovieDetailEntity, FavoriteMovieAdapter.MovieViewHolder>(DIFF_CALLBACK) {
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MovieDetailEntity>() {
             override fun areItemsTheSame(oldItem: MovieDetailEntity, newItem: MovieDetailEntity) =

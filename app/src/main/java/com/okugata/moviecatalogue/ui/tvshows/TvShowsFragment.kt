@@ -44,7 +44,7 @@ class TvShowsFragment(
                 }
                 tvShowViewModel.getFavoriteTvShow().observe(viewLifecycleOwner) { tvShows ->
                     if (tvShows != null) {
-                        tvShowAdapter.submitData(viewLifecycleOwner.lifecycle, tvShows)
+                        tvShowAdapter.submitList(tvShows)
                     }
                 }
             } else {

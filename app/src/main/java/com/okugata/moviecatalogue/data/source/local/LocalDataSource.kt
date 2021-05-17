@@ -2,7 +2,6 @@ package com.okugata.moviecatalogue.data.source.local
 
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
-import androidx.paging.PagingSource
 import com.okugata.moviecatalogue.data.source.local.entity.MovieDetailEntity
 import com.okugata.moviecatalogue.data.source.local.entity.PopularMovieEntity
 import com.okugata.moviecatalogue.data.source.local.entity.PopularTvShowEntity
@@ -23,7 +22,7 @@ class LocalDataSource private constructor(private val catalogueDao: CatalogueDao
         catalogueDao.insertPopularMovies(movies)
 
     fun getMovieDetail(id: Int): LiveData<MovieDetailEntity> = catalogueDao.getMovieDetail(id)
-    fun getFavoriteMovies(): PagingSource<Int, MovieDetailEntity> = catalogueDao.getFavoriteMovies()
+    fun getFavoriteMovies(): DataSource.Factory<Int, MovieDetailEntity> = catalogueDao.getFavoriteMovies()
     fun insertMovieDetail(movie: MovieDetailEntity) =
         catalogueDao.insertMovieDetail(movie)
 
@@ -38,7 +37,7 @@ class LocalDataSource private constructor(private val catalogueDao: CatalogueDao
         catalogueDao.insertPopularTvShows(tvShow)
 
     fun getTvShowDetail(id: Int): LiveData<TvShowDetailEntity> = catalogueDao.getTvShowDetail(id)
-    fun getFavoriteTvShows(): PagingSource<Int, TvShowDetailEntity> = catalogueDao.getFavoriteTvShows()
+    fun getFavoriteTvShows(): DataSource.Factory<Int, TvShowDetailEntity> = catalogueDao.getFavoriteTvShows()
     fun insertTvShowDetail(tvShow: TvShowDetailEntity) =
         catalogueDao.insertTvShowDetail(tvShow)
 

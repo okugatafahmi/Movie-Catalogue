@@ -161,22 +161,22 @@ class CatalogueRepository private constructor(
 
     }
 
-    override fun getFavoriteMovies(): LiveData<PagingData<MovieDetailEntity>> {
-        val config = PagingConfig(
-            enablePlaceholders = false,
-            initialLoadSize = 4,
-            pageSize = 4
-        )
-        return Pager(config, pagingSourceFactory = {localDataSource.getFavoriteMovies()}).liveData
+    override fun getFavoriteMovies(): LiveData<PagedList<MovieDetailEntity>> {
+        val config = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setInitialLoadSizeHint(4)
+            .setPageSize(4)
+            .build()
+        return LivePagedListBuilder(localDataSource.getFavoriteMovies(), config).build()
     }
 
-    override fun getFavoriteTvShows(): LiveData<PagingData<TvShowDetailEntity>> {
-        val config = PagingConfig(
-            enablePlaceholders = false,
-            initialLoadSize = 4,
-            pageSize = 4
-        )
-        return Pager(config, pagingSourceFactory = {localDataSource.getFavoriteTvShows()}).liveData
+    override fun getFavoriteTvShows(): LiveData<PagedList<TvShowDetailEntity>> {
+        val config = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setInitialLoadSizeHint(4)
+            .setPageSize(4)
+            .build()
+        return LivePagedListBuilder(localDataSource.getFavoriteTvShows(), config).build()
     }
 
     override fun setMovieFavorite(movie: MovieDetailEntity, newState: Boolean) =

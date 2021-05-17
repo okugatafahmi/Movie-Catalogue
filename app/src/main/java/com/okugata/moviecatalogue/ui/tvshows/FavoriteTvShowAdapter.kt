@@ -5,20 +5,18 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagingDataAdapter
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.api.ApiConfig.IMAGE_BASE_URL
-import com.okugata.moviecatalogue.data.source.local.entity.MovieDetailEntity
-import com.okugata.moviecatalogue.data.source.local.entity.PopularTvShowEntity
 import com.okugata.moviecatalogue.data.source.local.entity.TvShowDetailEntity
 import com.okugata.moviecatalogue.databinding.ListItemsBinding
 import com.okugata.moviecatalogue.ui.detail.DetailActivity
 import com.okugata.moviecatalogue.utils.DeviceLocale
 
 class FavoriteTvShowAdapter :
-    PagingDataAdapter<TvShowDetailEntity, FavoriteTvShowAdapter.TvShowViewHolder>(DIFF_CALLBACK) {
+    PagedListAdapter<TvShowDetailEntity, FavoriteTvShowAdapter.TvShowViewHolder>(DIFF_CALLBACK) {
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TvShowDetailEntity>() {
             override fun areItemsTheSame(oldItem: TvShowDetailEntity, newItem: TvShowDetailEntity) =
