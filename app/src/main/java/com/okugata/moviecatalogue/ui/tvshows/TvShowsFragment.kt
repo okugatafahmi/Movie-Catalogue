@@ -8,12 +8,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.okugata.moviecatalogue.data.source.local.entity.PopularTvShowEntity
 import com.okugata.moviecatalogue.databinding.FragmentTvShowsBinding
 import com.okugata.moviecatalogue.viewmodel.TvShowViewModel
 import com.okugata.moviecatalogue.viewmodel.ViewModelFactory
 import com.okugata.moviecatalogue.vo.Status
-import java.util.*
 
 class TvShowsFragment(
     private val isFavorite: Boolean
@@ -37,37 +35,32 @@ class TvShowsFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
-            val tvShowAdapter = TvShowAdapter()
-            with(binding.rvTvShows) {
-                layoutManager = LinearLayoutManager(context)
-                setHasFixedSize(true)
-                adapter = tvShowAdapter
-            }
-
             if (isFavorite) {
-                tvShowViewModel.getFavoriteTvShow().observe(viewLifecycleOwner) { movies ->
-                    if (movies != null) {
-                        val list = LinkedList<PopularTvShowEntity>()
-                        for (item in movies) {
-                            val movie = PopularTvShowEntity(
-                                item.id,
-                                item.name,
-                                item.posterPath,
-                                item.firstAirDate
-                            )
-                            list.add(movie)
-                        }
-                        tvShowAdapter.setTvShows(list)
+                val tvShowAdapter = FavoriteTvShowAdapter()
+                with(binding.rvTvShows) {
+                    layoutManager = LinearLayoutManager(context)
+                    setHasFixedSize(true)
+                    adapter = tvShowAdapter
+                }
+                tvShowViewModel.getFavoriteTvShow().observe(viewLifecycleOwner) { tvShows ->
+                    if (tvShows != null) {
+                        tvShowAdapter.submitData(viewLifecycleOwner.lifecycle, tvShows)
                     }
                 }
             } else {
-                tvShowViewModel.getPopularTvShow().observe(viewLifecycleOwner) { movies ->
-                    if (movies != null) {
-                        when (movies.status) {
+                val tvShowAdapter = TvShowAdapter()
+                with(binding.rvTvShows) {
+                    layoutManager = LinearLayoutManager(context)
+                    setHasFixedSize(true)
+                    adapter = tvShowAdapter
+                }
+                tvShowViewModel.getPopularTvShow().observe(viewLifecycleOwner) { tvShows ->
+                    if (tvShows != null) {
+                        when (tvShows.status) {
                             Status.LOADING -> binding.progressBar.visibility = View.VISIBLE
                             Status.SUCCESS -> {
                                 binding.progressBar.visibility = View.GONE
-                                movies.data?.let { tvShowAdapter.setTvShows(it) }
+                                tvShows.data?.let { tvShowAdapter.setTvShows(it) }
                             }
                             Status.ERROR -> {
                                 binding.progressBar.visibility = View.GONE

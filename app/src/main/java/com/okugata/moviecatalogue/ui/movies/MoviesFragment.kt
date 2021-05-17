@@ -8,12 +8,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.okugata.moviecatalogue.data.source.local.entity.PopularMovieEntity
 import com.okugata.moviecatalogue.databinding.FragmentMoviesBinding
 import com.okugata.moviecatalogue.viewmodel.MovieViewModel
 import com.okugata.moviecatalogue.viewmodel.ViewModelFactory
 import com.okugata.moviecatalogue.vo.Status
-import java.util.*
 
 class MoviesFragment(
     private val isFavorite: Boolean
@@ -37,30 +35,25 @@ class MoviesFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
-            val movieAdapter = MovieAdapter()
-            with(binding.rvMovies) {
-                layoutManager = LinearLayoutManager(context)
-                setHasFixedSize(true)
-                adapter = movieAdapter
-            }
-
             if (isFavorite) {
+                val movieAdapter = FavoriteMovieAdapter()
+                with(binding.rvMovies) {
+                    layoutManager = LinearLayoutManager(context)
+                    setHasFixedSize(true)
+                    adapter = movieAdapter
+                }
                 movieViewModel.getFavoriteMovie().observe(viewLifecycleOwner) { movies ->
                     if (movies != null) {
-                        val list = LinkedList<PopularMovieEntity>()
-                        for (item in movies) {
-                            val movie = PopularMovieEntity(
-                                item.id,
-                                item.title,
-                                item.posterPath,
-                                item.releaseDate
-                            )
-                            list.add(movie)
-                        }
-                        movieAdapter.setMovies(list)
+                        movieAdapter.submitData(viewLifecycleOwner.lifecycle, movies)
                     }
                 }
             } else {
+                val movieAdapter = MovieAdapter()
+                with(binding.rvMovies) {
+                    layoutManager = LinearLayoutManager(context)
+                    setHasFixedSize(true)
+                    adapter = movieAdapter
+                }
                 movieViewModel.getPopularMovie().observe(viewLifecycleOwner) { movies ->
                     if (movies != null) {
                         when (movies.status) {

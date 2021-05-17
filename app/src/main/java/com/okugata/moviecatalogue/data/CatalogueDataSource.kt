@@ -1,6 +1,8 @@
 package com.okugata.moviecatalogue.data
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagedList
+import androidx.paging.PagingData
 import com.okugata.moviecatalogue.data.source.local.entity.MovieDetailEntity
 import com.okugata.moviecatalogue.data.source.local.entity.PopularMovieEntity
 import com.okugata.moviecatalogue.data.source.local.entity.PopularTvShowEntity
@@ -14,8 +16,8 @@ interface CatalogueDataSource {
     fun getPopularTvShows(): LiveData<Resource<List<PopularTvShowEntity>>>
     fun getTvShowDetail(id: Int): LiveData<Resource<TvShowDetailEntity>>
 
-    fun getFavoriteMovies(): LiveData<List<MovieDetailEntity>>
-    fun getFavoriteTvShows(): LiveData<List<TvShowDetailEntity>>
+    fun getFavoriteMovies(): LiveData<PagingData<MovieDetailEntity>>
+    fun getFavoriteTvShows(): LiveData<PagingData<TvShowDetailEntity>>
 
     fun setMovieFavorite(movie: MovieDetailEntity, newState: Boolean)
     fun setTvShowFavorite(tvShow: TvShowDetailEntity, newState: Boolean)

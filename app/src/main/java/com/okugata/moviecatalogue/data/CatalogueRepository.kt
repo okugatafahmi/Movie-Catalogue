@@ -1,6 +1,7 @@
 package com.okugata.moviecatalogue.data
 
 import androidx.lifecycle.LiveData
+import androidx.paging.*
 import com.okugata.moviecatalogue.data.source.local.LocalDataSource
 import com.okugata.moviecatalogue.data.source.local.entity.MovieDetailEntity
 import com.okugata.moviecatalogue.data.source.local.entity.PopularMovieEntity
@@ -160,11 +161,23 @@ class CatalogueRepository private constructor(
 
     }
 
-    override fun getFavoriteMovies(): LiveData<List<MovieDetailEntity>> =
-        localDataSource.getFavoriteMovies()
+    override fun getFavoriteMovies(): LiveData<PagingData<MovieDetailEntity>> {
+        val config = PagingConfig(
+            enablePlaceholders = false,
+            initialLoadSize = 4,
+            pageSize = 4
+        )
+        return Pager(config, pagingSourceFactory = {localDataSource.getFavoriteMovies()}).liveData
+    }
 
-    override fun getFavoriteTvShows(): LiveData<List<TvShowDetailEntity>> =
-        localDataSource.getFavoriteTvShows()
+    override fun getFavoriteTvShows(): LiveData<PagingData<TvShowDetailEntity>> {
+        val config = PagingConfig(
+            enablePlaceholders = false,
+            initialLoadSize = 4,
+            pageSize = 4
+        )
+        return Pager(config, pagingSourceFactory = {localDataSource.getFavoriteTvShows()}).liveData
+    }
 
     override fun setMovieFavorite(movie: MovieDetailEntity, newState: Boolean) =
         appExecutors.diskIO().execute { localDataSource.setMovieFavorite(movie, newState) }

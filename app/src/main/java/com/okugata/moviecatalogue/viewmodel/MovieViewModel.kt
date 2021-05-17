@@ -2,6 +2,7 @@ package com.okugata.moviecatalogue.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.paging.PagingData
 import com.okugata.moviecatalogue.data.CatalogueRepository
 import com.okugata.moviecatalogue.data.source.local.entity.MovieDetailEntity
 import com.okugata.moviecatalogue.data.source.local.entity.PopularMovieEntity
@@ -12,6 +13,6 @@ class MovieViewModel(private val catalogueRepository: CatalogueRepository) : Vie
     fun getPopularMovie(): LiveData<Resource<List<PopularMovieEntity>>> =
         catalogueRepository.getPopularMovies()
 
-    fun getFavoriteMovie(): LiveData<List<MovieDetailEntity>> =
+    fun getFavoriteMovie(): LiveData<PagingData<MovieDetailEntity>> =
         catalogueRepository.getFavoriteMovies()
 }
