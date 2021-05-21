@@ -119,16 +119,17 @@ class CatalogueRepositoryTest {
 
     @Test
     fun getFavoriteTvShows() {
-//        val dummy: List<TvShowDetailEntity> = ArrayList<TvShowDetailEntity>().apply{
-//            add(mock(TvShowDetailEntity::class.java))
-//        }
-//        val dummyTvShows = MutableLiveData<List<TvShowDetailEntity>>()
-//        dummyTvShows.value = dummy
-//        `when`(local.getFavoriteTvShows()).thenReturn(dummyTvShows)
-//
-//        val tvShows = LiveDataTestUtil.getValue(repository.getFavoriteTvShows())
-//        verify(local).getFavoriteTvShows()
-//        assertNotNull(tvShows)
-//        assertEquals(tvShows, dummy)
+        val dataSourceFactory = mock(DataSource.Factory::class.java) as DataSource.Factory<Int, TvShowDetailEntity>
+        `when`(local.getFavoriteTvShows()).thenReturn(dataSourceFactory)
+        repository.getFavoriteTvShows()
+
+        val dummy: List<TvShowDetailEntity> = ArrayList<TvShowDetailEntity>().apply{
+            add(mock(TvShowDetailEntity::class.java))
+        }
+
+        val tvShows = Resource.success(PagedListUtil.mockPagedList(dummy))
+        verify(local).getFavoriteTvShows()
+        assertNotNull(tvShows)
+        assertEquals(dummy.size, tvShows.data?.size)
     }
 }
