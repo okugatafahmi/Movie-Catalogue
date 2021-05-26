@@ -5,31 +5,22 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.core.api.ApiConfig.IMAGE_BASE_URL
-import com.okugata.moviecatalogue.core.data.source.local.entity.TvShowDetailEntity
+import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.databinding.ListItemsBinding
 import com.okugata.moviecatalogue.core.ui.detail.DetailActivity
 import com.okugata.moviecatalogue.core.utils.DeviceLocale
 
-class FavoriteTvShowAdapter :
-    PagedListAdapter<TvShowDetailEntity, FavoriteTvShowAdapter.TvShowViewHolder>(DIFF_CALLBACK) {
-    companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TvShowDetailEntity>() {
-            override fun areItemsTheSame(oldItem: TvShowDetailEntity, newItem: TvShowDetailEntity) =
-                oldItem.id == newItem.id
+class FavoriteTvShowAdapter : RecyclerView.Adapter<FavoriteTvShowAdapter.TvShowViewHolder>() {
+    private var listTvShows = ArrayList<TvShow>()
 
-            override fun areContentsTheSame(
-                oldItem: TvShowDetailEntity,
-                newItem: TvShowDetailEntity
-            ) =
-                oldItem == newItem
-        }
+    fun setTvShows(tvShows: List<TvShow>) {
+        listTvShows.clear()
+        listTvShows.addAll(tvShows)
+        notifyDataSetChanged()
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TvShowViewHolder {
         val listItemsBinding =
@@ -38,13 +29,14 @@ class FavoriteTvShowAdapter :
     }
 
     override fun onBindViewHolder(holder: TvShowViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it) }
+        listTvShows.get(position).let { holder.bind(it) }
     }
 
+    override fun getItemCount(): Int = listTvShows.size
 
     class TvShowViewHolder(private val binding: ListItemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(tvShow: TvShowDetailEntity) {
+        fun bind(tvShow: TvShow) {
             with(binding) {
                 tvItemTitle.text = tvShow.name
                 tvItemDate.text = DeviceLocale.convertDate(tvShow.firstAirDate)

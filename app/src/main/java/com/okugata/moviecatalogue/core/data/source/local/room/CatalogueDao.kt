@@ -1,7 +1,6 @@
 package com.okugata.moviecatalogue.core.data.source.local.room
 
 import androidx.lifecycle.LiveData
-import androidx.paging.DataSource
 import androidx.room.*
 import com.okugata.moviecatalogue.core.data.source.local.entity.MovieDetailEntity
 import com.okugata.moviecatalogue.core.data.source.local.entity.PopularMovieEntity
@@ -21,7 +20,7 @@ interface CatalogueDao {
     fun getMovieDetail(id: Int): LiveData<MovieDetailEntity>
 
     @Query("SELECT * FROM ${MovieDetailEntity.TABLE_NAME} WHERE favorite = 1")
-    fun getFavoriteMovies(): DataSource.Factory<Int, MovieDetailEntity>
+    fun getFavoriteMovies(): LiveData<List<MovieDetailEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMovieDetail(movies: MovieDetailEntity)
@@ -41,7 +40,7 @@ interface CatalogueDao {
     fun getTvShowDetail(id: Int): LiveData<TvShowDetailEntity>
 
     @Query("SELECT * FROM ${TvShowDetailEntity.TABLE_NAME} WHERE favorite = 1")
-    fun getFavoriteTvShows(): DataSource.Factory<Int, TvShowDetailEntity>
+    fun getFavoriteTvShows():  LiveData<List<TvShowDetailEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTvShowDetail(tvShows: TvShowDetailEntity)

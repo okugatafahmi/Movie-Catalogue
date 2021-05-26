@@ -5,28 +5,22 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.core.api.ApiConfig.IMAGE_BASE_URL
-import com.okugata.moviecatalogue.core.data.source.local.entity.MovieDetailEntity
+import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.databinding.ListItemsBinding
 import com.okugata.moviecatalogue.core.ui.detail.DetailActivity
 import com.okugata.moviecatalogue.core.utils.DeviceLocale
 
-class FavoriteMovieAdapter :
-    PagedListAdapter<MovieDetailEntity, FavoriteMovieAdapter.MovieViewHolder>(DIFF_CALLBACK) {
-    companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MovieDetailEntity>() {
-            override fun areItemsTheSame(oldItem: MovieDetailEntity, newItem: MovieDetailEntity) =
-                oldItem.id == newItem.id
+class FavoriteMovieAdapter : RecyclerView.Adapter<FavoriteMovieAdapter.MovieViewHolder>() {
+    private var listMovies = ArrayList<Movie>()
 
-            override fun areContentsTheSame(
-                oldItem: MovieDetailEntity,
-                newItem: MovieDetailEntity
-            ) =
-                oldItem == newItem
+    fun setMovies(movies: List<Movie>?) {
+        movies?.let {
+            listMovies.clear()
+            listMovies.addAll(it)
+            notifyDataSetChanged()
         }
     }
 
@@ -37,12 +31,14 @@ class FavoriteMovieAdapter :
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it) }
+        listMovies.get(position).let { holder.bind(it) }
     }
+
+    override fun getItemCount(): Int = listMovies.size
 
     class MovieViewHolder(private val binding: ListItemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: MovieDetailEntity) {
+        fun bind(movie: Movie) {
             with(binding) {
                 tvItemTitle.text = movie.title
                 tvItemDate.text = DeviceLocale.convertDate(movie.releaseDate)

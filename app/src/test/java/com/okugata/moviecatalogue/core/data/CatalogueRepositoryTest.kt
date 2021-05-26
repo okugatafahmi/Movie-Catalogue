@@ -1,8 +1,8 @@
 package com.okugata.moviecatalogue.core.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.DataSource
 import com.nhaarman.mockitokotlin2.verify
 import com.okugata.moviecatalogue.core.data.source.local.LocalDataSource
 import com.okugata.moviecatalogue.core.data.source.local.entity.MovieDetailEntity
@@ -11,9 +11,8 @@ import com.okugata.moviecatalogue.core.data.source.local.entity.PopularTvShowEnt
 import com.okugata.moviecatalogue.core.data.source.local.entity.TvShowDetailEntity
 import com.okugata.moviecatalogue.core.data.source.remote.RemoteDataSource
 import com.okugata.moviecatalogue.core.utils.AppExecutors
+import com.okugata.moviecatalogue.core.utils.EntityMock
 import com.okugata.moviecatalogue.core.utils.LiveDataTestUtil
-import com.okugata.moviecatalogue.core.utils.PagedListUtil
-import com.okugata.moviecatalogue.core.vo.Resource
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -41,9 +40,9 @@ class CatalogueRepositoryTest {
     private val id = 1
 
     @Mock
-    private lateinit var dataSourceFactoryMovie: DataSource.Factory<Int, MovieDetailEntity>
+    private lateinit var dataSourceFactoryMovie: LiveData<List<MovieDetailEntity>>
     @Mock
-    private lateinit var dataSourceFactoryTvShow: DataSource.Factory<Int, TvShowDetailEntity>
+    private lateinit var dataSourceFactoryTvShow: LiveData<List<TvShowDetailEntity>>
 
     @Before
     fun setUp() {
@@ -53,7 +52,7 @@ class CatalogueRepositoryTest {
     @Test
     fun getPopularMovies() {
         val dummy: List<PopularMovieEntity> = ArrayList<PopularMovieEntity>().apply{
-            add(mock(PopularMovieEntity::class.java))
+            add(EntityMock.popularMovie())
         }
         val dummyMovies = MutableLiveData<List<PopularMovieEntity>>()
         dummyMovies.value = dummy
@@ -62,12 +61,12 @@ class CatalogueRepositoryTest {
         val movies = LiveDataTestUtil.getValue(repository.getPopularMovies())
         verify(local).getPopularMovies()
         assertNotNull(movies.data)
-        assertEquals(movies.data, dummy)
+        assertEquals(movies.data?.size, dummy.size)
     }
 
     @Test
     fun getMovieDetail() {
-        val dummy = mock(MovieDetailEntity::class.java)
+        val dummy = EntityMock.movieDetail()
         val dummyMovie = MutableLiveData<MovieDetailEntity>()
         dummyMovie.value = dummy
         `when`(local.getMovieDetail(id)).thenReturn(dummyMovie)
@@ -75,13 +74,13 @@ class CatalogueRepositoryTest {
         val movie = LiveDataTestUtil.getValue(repository.getMovieDetail(id))
         verify(local).getMovieDetail(id)
         assertNotNull(movie.data)
-        assertEquals(movie.data, dummy)
+        assertEquals(movie.data?.id, dummy.id)
     }
 
     @Test
     fun getPopularTvShows() {
         val dummy: List<PopularTvShowEntity> = ArrayList<PopularTvShowEntity>().apply{
-            add(mock(PopularTvShowEntity::class.java))
+            add(EntityMock.popularTvShow())
         }
         val dummyTvShows = MutableLiveData<List<PopularTvShowEntity>>()
         dummyTvShows.value = dummy
@@ -90,12 +89,12 @@ class CatalogueRepositoryTest {
         val tvShows = LiveDataTestUtil.getValue(repository.getPopularTvShows())
         verify(local).getPopularTvShows()
         assertNotNull(tvShows.data)
-        assertEquals(tvShows.data, dummy)
+        assertEquals(tvShows.data?.size, dummy.size)
     }
 
     @Test
     fun getTvShowDetail() {
-        val dummy = mock(TvShowDetailEntity::class.java)
+        val dummy = EntityMock.tvShowDetail()
         val dummyTvShow = MutableLiveData<TvShowDetailEntity>()
         dummyTvShow.value = dummy
         `when`(local.getTvShowDetail(id)).thenReturn(dummyTvShow)
@@ -103,36 +102,20 @@ class CatalogueRepositoryTest {
         val tvShow = LiveDataTestUtil.getValue(repository.getTvShowDetail(id))
         verify(local).getTvShowDetail(id)
         assertNotNull(tvShow.data)
-        assertEquals(tvShow.data, dummy)
+        assertEquals(tvShow.data?.id, dummy.id)
     }
 
     @Test
     fun getFavoriteMovies() {
         `when`(local.getFavoriteMovies()).thenReturn(dataSourceFactoryMovie)
         repository.getFavoriteMovies()
-
-        val dummy: List<MovieDetailEntity> = ArrayList<MovieDetailEntity>().apply{
-            add(mock(MovieDetailEntity::class.java))
-        }
-
-        val movies = Resource.success(PagedListUtil.mockPagedList(dummy))
         verify(local).getFavoriteMovies()
-        assertNotNull(movies)
-        assertEquals(dummy.size, movies.data?.size)
     }
 
     @Test
     fun getFavoriteTvShows() {
         `when`(local.getFavoriteTvShows()).thenReturn(dataSourceFactoryTvShow)
         repository.getFavoriteTvShows()
-
-        val dummy: List<TvShowDetailEntity> = ArrayList<TvShowDetailEntity>().apply{
-            add(mock(TvShowDetailEntity::class.java))
-        }
-
-        val tvShows = Resource.success(PagedListUtil.mockPagedList(dummy))
         verify(local).getFavoriteTvShows()
-        assertNotNull(tvShows)
-        assertEquals(dummy.size, tvShows.data?.size)
     }
 }

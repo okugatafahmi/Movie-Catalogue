@@ -1,23 +1,20 @@
 package com.okugata.moviecatalogue.core.data
 
 import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
-import com.okugata.moviecatalogue.core.data.source.local.entity.MovieDetailEntity
-import com.okugata.moviecatalogue.core.data.source.local.entity.PopularMovieEntity
-import com.okugata.moviecatalogue.core.data.source.local.entity.PopularTvShowEntity
-import com.okugata.moviecatalogue.core.data.source.local.entity.TvShowDetailEntity
+import com.okugata.moviecatalogue.core.domain.model.Movie
+import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.core.vo.Resource
 
 interface CatalogueDataSource {
-    fun getPopularMovies(): LiveData<Resource<List<PopularMovieEntity>>>
-    fun getMovieDetail(id: Int): LiveData<Resource<MovieDetailEntity>>
+    fun getPopularMovies(): LiveData<Resource<List<Movie>>>
+    fun getMovieDetail(id: Int): LiveData<Resource<Movie>>
 
-    fun getPopularTvShows(): LiveData<Resource<List<PopularTvShowEntity>>>
-    fun getTvShowDetail(id: Int): LiveData<Resource<TvShowDetailEntity>>
+    fun getPopularTvShows(): LiveData<Resource<List<TvShow>>>
+    fun getTvShowDetail(id: Int): LiveData<Resource<TvShow>>
 
-    fun getFavoriteMovies(): LiveData<PagedList<MovieDetailEntity>>
-    fun getFavoriteTvShows(): LiveData<PagedList<TvShowDetailEntity>>
+    fun getFavoriteMovies(): LiveData<List<Movie>>
+    fun getFavoriteTvShows(): LiveData<List<TvShow>>
 
-    fun setMovieFavorite(movie: MovieDetailEntity, newState: Boolean)
-    fun setTvShowFavorite(tvShow: TvShowDetailEntity, newState: Boolean)
+    fun setMovieFavorite(movie: Movie, newState: Boolean)
+    fun setTvShowFavorite(tvShow: TvShow, newState: Boolean)
 }

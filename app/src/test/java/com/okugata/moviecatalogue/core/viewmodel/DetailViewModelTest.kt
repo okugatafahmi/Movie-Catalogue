@@ -4,8 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.okugata.moviecatalogue.core.data.CatalogueRepository
-import com.okugata.moviecatalogue.core.data.source.local.entity.MovieDetailEntity
-import com.okugata.moviecatalogue.core.data.source.local.entity.TvShowDetailEntity
+import com.okugata.moviecatalogue.core.domain.model.Movie
+import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.core.vo.Resource
 import org.junit.Before
 import org.junit.Test
@@ -27,14 +27,14 @@ class DetailViewModelTest {
     private lateinit var catalogueRepository: CatalogueRepository
 
     @Mock
-    private lateinit var observerMovie: Observer<Resource<MovieDetailEntity>>
+    private lateinit var observerMovie: Observer<Resource<Movie>>
     @Mock
-    private lateinit var observerTvShow: Observer<Resource<TvShowDetailEntity>>
+    private lateinit var observerTvShow: Observer<Resource<TvShow>>
 
     @Mock
-    private lateinit var dummyMovieDetail: MovieDetailEntity
+    private lateinit var dummyMovieDetail: Movie
     @Mock
-    private lateinit var dummyTvShowDetail: TvShowDetailEntity
+    private lateinit var dummyTvShowDetail: TvShow
 
     private lateinit var detailViewModel: DetailViewModel
     private var id = 1
@@ -47,7 +47,7 @@ class DetailViewModelTest {
     @Test
     fun getMovieDetail() {
         val dummy = Resource.success(dummyMovieDetail)
-        val movieDetail = MutableLiveData<Resource<MovieDetailEntity>>()
+        val movieDetail = MutableLiveData<Resource<Movie>>()
         movieDetail.value = dummy
 
         `when`(catalogueRepository.getMovieDetail(id)).thenReturn(movieDetail)
@@ -62,7 +62,7 @@ class DetailViewModelTest {
     @Test
     fun getTvShowDetail() {
         val dummy = Resource.success(dummyTvShowDetail)
-        val tvShowDetail = MutableLiveData<Resource<TvShowDetailEntity>>()
+        val tvShowDetail = MutableLiveData<Resource<TvShow>>()
         tvShowDetail.value = dummy
 
         `when`(catalogueRepository.getTvShowDetail(id)).thenReturn(tvShowDetail)

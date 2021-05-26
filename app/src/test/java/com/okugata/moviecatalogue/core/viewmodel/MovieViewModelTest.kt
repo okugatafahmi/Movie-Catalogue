@@ -3,10 +3,8 @@ package com.okugata.moviecatalogue.core.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.paging.PagedList
 import com.okugata.moviecatalogue.core.data.CatalogueRepository
-import com.okugata.moviecatalogue.core.data.source.local.entity.MovieDetailEntity
-import com.okugata.moviecatalogue.core.data.source.local.entity.PopularMovieEntity
+import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.core.vo.Resource
 import org.junit.Test
 import org.junit.Assert.*
@@ -28,14 +26,14 @@ class MovieViewModelTest {
     private lateinit var catalogueRepository: CatalogueRepository
 
     @Mock
-    private lateinit var observerPopular: Observer<Resource<List<PopularMovieEntity>>>
+    private lateinit var observerPopular: Observer<Resource<List<Movie>>>
 
     @Mock
-    private lateinit var observerFavorite: Observer<List<MovieDetailEntity>>
+    private lateinit var observerFavorite: Observer<List<Movie>>
 
     private lateinit var movieViewModel: MovieViewModel
     @Mock
-    private lateinit var pagedList: PagedList<MovieDetailEntity>
+    private lateinit var movies: List<Movie>
 
     @Before
     fun setUp() {
@@ -44,8 +42,8 @@ class MovieViewModelTest {
 
     @Test
     fun getPopularMovie() {
-        val dummyPopularMovie: Resource<List<PopularMovieEntity>> = Resource.success(ArrayList())
-        val popularMovie = MutableLiveData<Resource<List<PopularMovieEntity>>>()
+        val dummyPopularMovie: Resource<List<Movie>> = Resource.success(ArrayList())
+        val popularMovie = MutableLiveData<Resource<List<Movie>>>()
         popularMovie.value = dummyPopularMovie
 
         `when`(catalogueRepository.getPopularMovies()).thenReturn(popularMovie)
@@ -59,8 +57,8 @@ class MovieViewModelTest {
 
     @Test
     fun getFavoriteMovie() {
-        val favoriteMovie = MutableLiveData<PagedList<MovieDetailEntity>>()
-        favoriteMovie.value = pagedList
+        val favoriteMovie = MutableLiveData<List<Movie>>()
+        favoriteMovie.value = movies
 
         `when`(catalogueRepository.getFavoriteMovies()).thenReturn(favoriteMovie)
         val movies = movieViewModel.getFavoriteMovie().value
@@ -68,6 +66,6 @@ class MovieViewModelTest {
         assertNotNull(movies)
 
         movieViewModel.getFavoriteMovie().observeForever(observerFavorite)
-        verify(observerFavorite).onChanged(pagedList)
+        verify(observerFavorite).onChanged(this.movies)
     }
 }

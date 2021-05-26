@@ -3,10 +3,8 @@ package com.okugata.moviecatalogue.core.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.paging.PagedList
 import com.okugata.moviecatalogue.core.data.CatalogueRepository
-import com.okugata.moviecatalogue.core.data.source.local.entity.PopularTvShowEntity
-import com.okugata.moviecatalogue.core.data.source.local.entity.TvShowDetailEntity
+import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.core.vo.Resource
 import org.junit.Before
 import org.junit.Test
@@ -28,13 +26,13 @@ class TvShowViewModelTest {
     private lateinit var catalogueRepository: CatalogueRepository
 
     @Mock
-    private lateinit var observerPopular: Observer<Resource<List<PopularTvShowEntity>>>
+    private lateinit var observerPopular: Observer<Resource<List<TvShow>>>
     @Mock
-    private lateinit var observerFavorite: Observer<List<TvShowDetailEntity>>
+    private lateinit var observerFavorite: Observer<List<TvShow>>
 
     private lateinit var tvShowViewModel: TvShowViewModel
     @Mock
-    private lateinit var pagedList: PagedList<TvShowDetailEntity>
+    private lateinit var tvShows: List<TvShow>
 
     @Before
     fun setUp() {
@@ -43,8 +41,8 @@ class TvShowViewModelTest {
 
     @Test
     fun getPopularTvShow() {
-        val dummyPopularTvShow: Resource<List<PopularTvShowEntity>> = Resource.success(ArrayList())
-        val popularTvShow = MutableLiveData<Resource<List<PopularTvShowEntity>>>()
+        val dummyPopularTvShow: Resource<List<TvShow>> = Resource.success(ArrayList())
+        val popularTvShow = MutableLiveData<Resource<List<TvShow>>>()
         popularTvShow.value = dummyPopularTvShow
 
         Mockito.`when`(catalogueRepository.getPopularTvShows()).thenReturn(popularTvShow)
@@ -58,8 +56,8 @@ class TvShowViewModelTest {
 
     @Test
     fun getFavoriteTvShow() {
-        val favoriteTvShow = MutableLiveData<PagedList<TvShowDetailEntity>>()
-        favoriteTvShow.value = pagedList
+        val favoriteTvShow = MutableLiveData<List<TvShow>>()
+        favoriteTvShow.value = tvShows
 
         Mockito.`when`(catalogueRepository.getFavoriteTvShows()).thenReturn(favoriteTvShow)
         val movies = tvShowViewModel.getFavoriteTvShow().value
@@ -67,6 +65,6 @@ class TvShowViewModelTest {
         assertNotNull(movies)
 
         tvShowViewModel.getFavoriteTvShow().observeForever(observerFavorite)
-        verify(observerFavorite).onChanged(pagedList)
+        verify(observerFavorite).onChanged(tvShows)
     }
 }

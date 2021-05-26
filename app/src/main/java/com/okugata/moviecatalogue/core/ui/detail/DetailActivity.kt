@@ -1,6 +1,8 @@
 package com.okugata.moviecatalogue.core.ui.detail
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -9,9 +11,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.R
-import com.okugata.moviecatalogue.core.data.source.local.entity.MovieDetailEntity
-import com.okugata.moviecatalogue.core.data.source.local.entity.TvShowDetailEntity
+import com.okugata.moviecatalogue.core.api.ApiConfig.IMAGE_BASE_URL
+import com.okugata.moviecatalogue.core.domain.model.Movie
+import com.okugata.moviecatalogue.core.domain.model.TvShow
+import com.okugata.moviecatalogue.core.utils.DeviceLocale.convertDate
 import com.okugata.moviecatalogue.databinding.ActivityDetailBinding
 import com.okugata.moviecatalogue.core.viewmodel.DetailViewModel
 import com.okugata.moviecatalogue.core.viewmodel.ViewModelFactory
@@ -27,8 +32,8 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
     private lateinit var detailViewModel: DetailViewModel
     private var isMovie = true
-    private var movie: MovieDetailEntity? = null
-    private var tvShow: TvShowDetailEntity? = null
+    private var movie: Movie? = null
+    private var tvShow: TvShow? = null
     private var id = 0
 
     private var menu: Menu? = null
@@ -144,7 +149,7 @@ class DetailActivity : AppCompatActivity() {
         startActivity(shareIntent)
     }
 
-    private fun setDetail(movie: MovieDetailEntity) {
+    private fun setDetail(movie: Movie) {
         this.movie = movie
         supportActionBar?.title = movie.title
         with(binding) {
@@ -162,7 +167,7 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun setDetail(tvShow: TvShowDetailEntity) {
+    private fun setDetail(tvShow: TvShow) {
         this.tvShow = tvShow
         supportActionBar?.title = tvShow.name
         with(binding) {
@@ -175,7 +180,7 @@ class DetailActivity : AppCompatActivity() {
             textOverview.text = tvShow.overview
             val episode = resources.getQuantityString(
                 R.plurals.numberOfEpisode,
-                tvShow.numberOfEpisodes,
+                tvShow.numberOfEpisodes?:0,
                 tvShow.numberOfEpisodes
             )
             textDetail.text = getString(
