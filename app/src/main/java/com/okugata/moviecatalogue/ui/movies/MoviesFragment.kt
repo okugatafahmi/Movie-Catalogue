@@ -16,7 +16,9 @@ import com.okugata.moviecatalogue.vo.Status
 class MoviesFragment(
     private val isFavorite: Boolean
 ) : Fragment() {
-    private lateinit var binding: FragmentMoviesBinding
+    private var _binding: FragmentMoviesBinding? = null
+    private val binding
+        get() = _binding!!
     private lateinit var movieViewModel: MovieViewModel
 
     override fun onCreateView(
@@ -24,12 +26,17 @@ class MoviesFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMoviesBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentMoviesBinding.inflate(layoutInflater, container, false)
         movieViewModel = ViewModelProvider(
             this,
             ViewModelFactory.getInstance(requireActivity())
         )[MovieViewModel::class.java]
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

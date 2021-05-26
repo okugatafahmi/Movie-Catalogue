@@ -16,7 +16,9 @@ import com.okugata.moviecatalogue.vo.Status
 class TvShowsFragment(
     private val isFavorite: Boolean
 ) : Fragment() {
-    private lateinit var binding: FragmentTvShowsBinding
+    private var _binding: FragmentTvShowsBinding? = null
+    private val binding
+        get() = _binding!!
     private lateinit var tvShowViewModel: TvShowViewModel
 
     override fun onCreateView(
@@ -24,12 +26,17 @@ class TvShowsFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentTvShowsBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentTvShowsBinding.inflate(layoutInflater, container, false)
         tvShowViewModel = ViewModelProvider(
             this,
             ViewModelFactory.getInstance(requireActivity())
         )[TvShowViewModel::class.java]
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

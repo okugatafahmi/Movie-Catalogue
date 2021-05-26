@@ -4,17 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class PopularMovieResponse(
 
-	@field:SerializedName("page")
-	val page: Int,
-
-	@field:SerializedName("total_pages")
-	val totalPages: Int,
-
 	@field:SerializedName("results")
-	val results: List<PopularMovie>,
-
-	@field:SerializedName("total_results")
-	val totalResults: Int
+	val results: List<PopularMovie>
 )
 
 data class PopularMovie(

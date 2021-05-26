@@ -40,6 +40,11 @@ class CatalogueRepositoryTest {
     private lateinit var repository: FakeCatalogueRepository
     private val id = 1
 
+    @Mock
+    private lateinit var dataSourceFactoryMovie: DataSource.Factory<Int, MovieDetailEntity>
+    @Mock
+    private lateinit var dataSourceFactoryTvShow: DataSource.Factory<Int, TvShowDetailEntity>
+
     @Before
     fun setUp() {
         repository = FakeCatalogueRepository(remote, local, appExecutors)
@@ -103,8 +108,7 @@ class CatalogueRepositoryTest {
 
     @Test
     fun getFavoriteMovies() {
-        val dataSourceFactory = mock(DataSource.Factory::class.java) as DataSource.Factory<Int, MovieDetailEntity>
-        `when`(local.getFavoriteMovies()).thenReturn(dataSourceFactory)
+        `when`(local.getFavoriteMovies()).thenReturn(dataSourceFactoryMovie)
         repository.getFavoriteMovies()
 
         val dummy: List<MovieDetailEntity> = ArrayList<MovieDetailEntity>().apply{
@@ -119,8 +123,7 @@ class CatalogueRepositoryTest {
 
     @Test
     fun getFavoriteTvShows() {
-        val dataSourceFactory = mock(DataSource.Factory::class.java) as DataSource.Factory<Int, TvShowDetailEntity>
-        `when`(local.getFavoriteTvShows()).thenReturn(dataSourceFactory)
+        `when`(local.getFavoriteTvShows()).thenReturn(dataSourceFactoryTvShow)
         repository.getFavoriteTvShows()
 
         val dummy: List<TvShowDetailEntity> = ArrayList<TvShowDetailEntity>().apply{
