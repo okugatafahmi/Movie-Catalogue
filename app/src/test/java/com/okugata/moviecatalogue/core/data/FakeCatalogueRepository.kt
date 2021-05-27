@@ -11,6 +11,7 @@ import com.okugata.moviecatalogue.core.data.source.remote.response.PopularTvShow
 import com.okugata.moviecatalogue.core.data.source.remote.response.TvShowDetailResponse
 import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.core.domain.model.TvShow
+import com.okugata.moviecatalogue.core.domain.repository.ICatalogueRepository
 import com.okugata.moviecatalogue.core.utils.AppExecutors
 import com.okugata.moviecatalogue.core.utils.MovieMapper
 import com.okugata.moviecatalogue.core.utils.TvShowMapper
@@ -20,7 +21,7 @@ class FakeCatalogueRepository constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
     private val appExecutors: AppExecutors
-) : CatalogueDataSource {
+) : ICatalogueRepository {
 
     override fun getPopularMovies(): LiveData<Resource<List<Movie>>> {
         return object :

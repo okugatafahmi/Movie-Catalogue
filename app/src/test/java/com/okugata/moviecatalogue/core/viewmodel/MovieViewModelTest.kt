@@ -3,8 +3,8 @@ package com.okugata.moviecatalogue.core.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.okugata.moviecatalogue.core.data.CatalogueRepository
 import com.okugata.moviecatalogue.core.domain.model.Movie
+import com.okugata.moviecatalogue.core.domain.usecase.CatalogueUseCase
 import com.okugata.moviecatalogue.core.vo.Resource
 import org.junit.Test
 import org.junit.Assert.*
@@ -23,7 +23,7 @@ class MovieViewModelTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Mock
-    private lateinit var catalogueRepository: CatalogueRepository
+    private lateinit var catalogueUseCase: CatalogueUseCase
 
     @Mock
     private lateinit var observerPopular: Observer<Resource<List<Movie>>>
@@ -37,7 +37,7 @@ class MovieViewModelTest {
 
     @Before
     fun setUp() {
-        movieViewModel = MovieViewModel(catalogueRepository)
+        movieViewModel = MovieViewModel(catalogueUseCase)
     }
 
     @Test
@@ -46,9 +46,9 @@ class MovieViewModelTest {
         val popularMovie = MutableLiveData<Resource<List<Movie>>>()
         popularMovie.value = dummyPopularMovie
 
-        `when`(catalogueRepository.getPopularMovies()).thenReturn(popularMovie)
+        `when`(catalogueUseCase.getPopularMovies()).thenReturn(popularMovie)
         val movies = movieViewModel.getPopularMovie().value
-        verify(catalogueRepository).getPopularMovies()
+        verify(catalogueUseCase).getPopularMovies()
         assertNotNull(movies)
 
         movieViewModel.getPopularMovie().observeForever(observerPopular)
@@ -60,9 +60,9 @@ class MovieViewModelTest {
         val favoriteMovie = MutableLiveData<List<Movie>>()
         favoriteMovie.value = movies
 
-        `when`(catalogueRepository.getFavoriteMovies()).thenReturn(favoriteMovie)
+        `when`(catalogueUseCase.getFavoriteMovies()).thenReturn(favoriteMovie)
         val movies = movieViewModel.getFavoriteMovie().value
-        verify(catalogueRepository).getFavoriteMovies()
+        verify(catalogueUseCase).getFavoriteMovies()
         assertNotNull(movies)
 
         movieViewModel.getFavoriteMovie().observeForever(observerFavorite)

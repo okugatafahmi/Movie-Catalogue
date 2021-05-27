@@ -3,9 +3,9 @@ package com.okugata.moviecatalogue.core.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.okugata.moviecatalogue.core.data.CatalogueRepository
 import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.core.domain.model.TvShow
+import com.okugata.moviecatalogue.core.domain.usecase.CatalogueUseCase
 import com.okugata.moviecatalogue.core.vo.Resource
 import org.junit.Before
 import org.junit.Test
@@ -24,7 +24,7 @@ class DetailViewModelTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Mock
-    private lateinit var catalogueRepository: CatalogueRepository
+    private lateinit var catalogueUseCase: CatalogueUseCase
 
     @Mock
     private lateinit var observerMovie: Observer<Resource<Movie>>
@@ -41,7 +41,7 @@ class DetailViewModelTest {
 
     @Before
     fun setUp() {
-        detailViewModel = DetailViewModel(catalogueRepository)
+        detailViewModel = DetailViewModel(catalogueUseCase)
     }
 
     @Test
@@ -50,9 +50,9 @@ class DetailViewModelTest {
         val movieDetail = MutableLiveData<Resource<Movie>>()
         movieDetail.value = dummy
 
-        `when`(catalogueRepository.getMovieDetail(id)).thenReturn(movieDetail)
+        `when`(catalogueUseCase.getMovieDetail(id)).thenReturn(movieDetail)
         val movie = detailViewModel.getMovieDetail(id).value
-        verify(catalogueRepository).getMovieDetail(id)
+        verify(catalogueUseCase).getMovieDetail(id)
         assertNotNull(movie)
 
         detailViewModel.getMovieDetail(id).observeForever(observerMovie)
@@ -65,9 +65,9 @@ class DetailViewModelTest {
         val tvShowDetail = MutableLiveData<Resource<TvShow>>()
         tvShowDetail.value = dummy
 
-        `when`(catalogueRepository.getTvShowDetail(id)).thenReturn(tvShowDetail)
+        `when`(catalogueUseCase.getTvShowDetail(id)).thenReturn(tvShowDetail)
         val tvShow = detailViewModel.getTvShowDetail(id).value
-        verify(catalogueRepository).getTvShowDetail(id)
+        verify(catalogueUseCase).getTvShowDetail(id)
         assertNotNull(tvShow)
 
         detailViewModel.getTvShowDetail(id).observeForever(observerTvShow)
@@ -77,12 +77,12 @@ class DetailViewModelTest {
     @Test
     fun setMovieFavorite() {
         detailViewModel.setMovieFavorite(dummyMovieDetail)
-        verify(catalogueRepository).setMovieFavorite(dummyMovieDetail, !dummyMovieDetail.favorite)
+        verify(catalogueUseCase).setMovieFavorite(dummyMovieDetail, !dummyMovieDetail.favorite)
     }
 
     @Test
     fun setTvShowFavorite() {
         detailViewModel.setTvShowFavorite(dummyTvShowDetail)
-        verify(catalogueRepository).setTvShowFavorite(dummyTvShowDetail, !dummyTvShowDetail.favorite)
+        verify(catalogueUseCase).setTvShowFavorite(dummyTvShowDetail, !dummyTvShowDetail.favorite)
     }
 }

@@ -1,11 +1,11 @@
-package com.okugata.moviecatalogue.core.data
+package com.okugata.moviecatalogue.core.domain.usecase
 
 import androidx.lifecycle.LiveData
 import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.core.vo.Resource
 
-interface CatalogueDataSource {
+interface CatalogueUseCase {
     fun getPopularMovies(): LiveData<Resource<List<Movie>>>
     fun getMovieDetail(id: Int): LiveData<Resource<Movie>>
 

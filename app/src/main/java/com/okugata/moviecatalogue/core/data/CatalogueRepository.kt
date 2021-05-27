@@ -8,6 +8,7 @@ import com.okugata.moviecatalogue.core.data.source.remote.RemoteDataSource
 import com.okugata.moviecatalogue.core.data.source.remote.response.*
 import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.core.domain.model.TvShow
+import com.okugata.moviecatalogue.core.domain.repository.ICatalogueRepository
 import com.okugata.moviecatalogue.core.utils.AppExecutors
 import com.okugata.moviecatalogue.core.utils.MovieMapper
 import com.okugata.moviecatalogue.core.utils.TvShowMapper
@@ -17,7 +18,7 @@ class CatalogueRepository private constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
     private val appExecutors: AppExecutors
-) : CatalogueDataSource {
+) : ICatalogueRepository {
 
     override fun getPopularMovies(): LiveData<Resource<List<Movie>>> {
         return object :
@@ -46,8 +47,8 @@ class CatalogueRepository private constructor(
     override fun getMovieDetail(id: Int): LiveData<Resource<Movie>> {
         return object : NetworkBoundResource<Movie, MovieDetailResponse>(appExecutors) {
             override fun loadFromDB(): LiveData<Movie> =
-                Transformations.map(localDataSource.getMovieDetail(id)) {
-                    MovieMapper.mapEntityToDomain(it)
+                Transformations.map(localDataSource.getMovieDetail(id)) { movie ->
+                    movie?.let { MovieMapper.mapEntityToDomain(it) }
                 }
 
             override fun shouldFetch(data: Movie?): Boolean =
@@ -94,8 +95,8 @@ class CatalogueRepository private constructor(
         return object :
             NetworkBoundResource<TvShow, TvShowDetailResponse>(appExecutors) {
             override fun loadFromDB(): LiveData<TvShow> =
-                Transformations.map(localDataSource.getTvShowDetail(id)) {
-                    TvShowMapper.mapEntityToDomain(it)
+                Transformations.map(localDataSource.getTvShowDetail(id)) { tvShow ->
+                    tvShow?.let { TvShowMapper.mapEntityToDomain(it) }
                 }
 
             override fun shouldFetch(data: TvShow?): Boolean =

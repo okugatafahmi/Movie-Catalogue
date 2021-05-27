@@ -29,7 +29,7 @@ class FavoriteTvShowAdapter : RecyclerView.Adapter<FavoriteTvShowAdapter.TvShowV
     }
 
     override fun onBindViewHolder(holder: TvShowViewHolder, position: Int) {
-        listTvShows.get(position).let { holder.bind(it) }
+        listTvShows[position].let { holder.bind(it) }
     }
 
     override fun getItemCount(): Int = listTvShows.size

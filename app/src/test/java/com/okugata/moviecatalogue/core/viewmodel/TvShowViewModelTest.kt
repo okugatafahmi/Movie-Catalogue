@@ -3,8 +3,8 @@ package com.okugata.moviecatalogue.core.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.okugata.moviecatalogue.core.data.CatalogueRepository
 import com.okugata.moviecatalogue.core.domain.model.TvShow
+import com.okugata.moviecatalogue.core.domain.usecase.CatalogueUseCase
 import com.okugata.moviecatalogue.core.vo.Resource
 import org.junit.Before
 import org.junit.Test
@@ -23,7 +23,7 @@ class TvShowViewModelTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Mock
-    private lateinit var catalogueRepository: CatalogueRepository
+    private lateinit var catalogueUseCase: CatalogueUseCase
 
     @Mock
     private lateinit var observerPopular: Observer<Resource<List<TvShow>>>
@@ -36,7 +36,7 @@ class TvShowViewModelTest {
 
     @Before
     fun setUp() {
-        tvShowViewModel = TvShowViewModel(catalogueRepository)
+        tvShowViewModel = TvShowViewModel(catalogueUseCase)
     }
 
     @Test
@@ -45,9 +45,9 @@ class TvShowViewModelTest {
         val popularTvShow = MutableLiveData<Resource<List<TvShow>>>()
         popularTvShow.value = dummyPopularTvShow
 
-        Mockito.`when`(catalogueRepository.getPopularTvShows()).thenReturn(popularTvShow)
+        Mockito.`when`(catalogueUseCase.getPopularTvShows()).thenReturn(popularTvShow)
         val movies = tvShowViewModel.getPopularTvShow().value
-        verify(catalogueRepository).getPopularTvShows()
+        verify(catalogueUseCase).getPopularTvShows()
         assertNotNull(movies)
 
         tvShowViewModel.getPopularTvShow().observeForever(observerPopular)
@@ -59,9 +59,9 @@ class TvShowViewModelTest {
         val favoriteTvShow = MutableLiveData<List<TvShow>>()
         favoriteTvShow.value = tvShows
 
-        Mockito.`when`(catalogueRepository.getFavoriteTvShows()).thenReturn(favoriteTvShow)
+        Mockito.`when`(catalogueUseCase.getFavoriteTvShows()).thenReturn(favoriteTvShow)
         val movies = tvShowViewModel.getFavoriteTvShow().value
-        verify(catalogueRepository).getFavoriteTvShows()
+        verify(catalogueUseCase).getFavoriteTvShows()
         assertNotNull(movies)
 
         tvShowViewModel.getFavoriteTvShow().observeForever(observerFavorite)

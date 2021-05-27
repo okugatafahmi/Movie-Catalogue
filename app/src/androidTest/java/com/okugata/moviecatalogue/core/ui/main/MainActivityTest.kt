@@ -14,8 +14,8 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import com.okugata.moviecatalogue.R
-import com.okugata.moviecatalogue.core.data.source.local.entity.MovieDetailEntity
-import com.okugata.moviecatalogue.core.data.source.local.entity.TvShowDetailEntity
+import com.okugata.moviecatalogue.core.domain.model.Movie
+import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.core.ui.detail.DetailActivity
 import com.okugata.moviecatalogue.core.utils.DeviceLocale
 import com.okugata.moviecatalogue.core.utils.EspressoIdlingResource
@@ -71,7 +71,7 @@ class MainActivityTest {
             val cls = activity.javaClass
             val field = cls.getDeclaredField("movie").apply { isAccessible = true }
             field.get(activity)?.let { movie ->
-                (movie as MovieDetailEntity).let {
+                (movie as Movie).let {
                     onView(withId(R.id.text_date)).check(
                         matches(withText(DeviceLocale.convertDate(it.releaseDate)))
                     )
@@ -107,7 +107,7 @@ class MainActivityTest {
             val cls = activity.javaClass
             val field = cls.getDeclaredField("tvShow").apply { isAccessible = true }
             field.get(activity)?.let { tvShow ->
-                (tvShow as TvShowDetailEntity).let {
+                (tvShow as TvShow).let {
                     onView(withId(R.id.text_date)).check(
                         matches(withText(DeviceLocale.convertDate(it.firstAirDate)))
                     )
@@ -124,13 +124,13 @@ class MainActivityTest {
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>( 0, click())
         )
 
-        var favorite: MovieDetailEntity? = null
+        var favorite: Movie? = null
 
         (getActivityInstance() as DetailActivity).let { activity ->
             val cls = activity.javaClass
             val field = cls.getDeclaredField("movie").apply { isAccessible = true }
             field.get(activity)?.let { movie ->
-                (movie as MovieDetailEntity).let {
+                (movie as Movie).let {
                     favorite = movie
                 }
             }
@@ -162,13 +162,13 @@ class MainActivityTest {
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click())
         )
 
-        var favorite: TvShowDetailEntity? = null
+        var favorite: TvShow? = null
 
         (getActivityInstance() as DetailActivity).let { activity ->
             val cls = activity.javaClass
             val field = cls.getDeclaredField("tvShow").apply { isAccessible = true }
             field.get(activity)?.let { tvShow ->
-                (tvShow as TvShowDetailEntity).let {
+                (tvShow as TvShow).let {
                     favorite = tvShow
                 }
             }

@@ -31,7 +31,7 @@ class FavoriteMovieAdapter : RecyclerView.Adapter<FavoriteMovieAdapter.MovieView
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        listMovies.get(position).let { holder.bind(it) }
+        listMovies[position].let { holder.bind(it) }
     }
 
     override fun getItemCount(): Int = listMovies.size

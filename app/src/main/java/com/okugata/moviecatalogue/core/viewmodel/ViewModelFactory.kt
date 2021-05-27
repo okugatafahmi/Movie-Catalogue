@@ -3,10 +3,10 @@ package com.okugata.moviecatalogue.core.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.okugata.moviecatalogue.core.data.CatalogueRepository
 import com.okugata.moviecatalogue.core.di.Injection
+import com.okugata.moviecatalogue.core.domain.usecase.CatalogueUseCase
 
-class ViewModelFactory private constructor(private val catalogueRepository: CatalogueRepository) :
+class ViewModelFactory private constructor(private val catalogueUseCase: CatalogueUseCase) :
     ViewModelProvider.NewInstanceFactory() {
 
     companion object {
@@ -15,7 +15,7 @@ class ViewModelFactory private constructor(private val catalogueRepository: Cata
 
         fun getInstance(context: Context): ViewModelFactory =
             instance ?: synchronized(this) {
-                instance ?: ViewModelFactory(Injection.provideRepository(context)).apply {
+                instance ?: ViewModelFactory(Injection.provideCatalogueUseCase(context)).apply {
                     instance = this
                 }
             }
@@ -25,13 +25,13 @@ class ViewModelFactory private constructor(private val catalogueRepository: Cata
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(MovieViewModel::class.java) -> {
-                MovieViewModel(catalogueRepository) as T
+                MovieViewModel(catalogueUseCase) as T
             }
             modelClass.isAssignableFrom(TvShowViewModel::class.java) -> {
-                TvShowViewModel(catalogueRepository) as T
+                TvShowViewModel(catalogueUseCase) as T
             }
             modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
-                DetailViewModel(catalogueRepository) as T
+                DetailViewModel(catalogueUseCase) as T
             }
             else -> throw Throwable("Unknown ViewModel class: " + modelClass.name)
         }
