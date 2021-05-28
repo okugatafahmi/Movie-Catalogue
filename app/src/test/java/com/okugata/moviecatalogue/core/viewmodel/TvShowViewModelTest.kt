@@ -1,11 +1,11 @@
 package com.okugata.moviecatalogue.core.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.okugata.moviecatalogue.core.data.Resource
 import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.core.domain.usecase.CatalogueUseCase
-import com.okugata.moviecatalogue.core.vo.Resource
+import kotlinx.coroutines.flow.flow
 import org.junit.Before
 import org.junit.Test
 import org.junit.Assert.*
@@ -41,9 +41,10 @@ class TvShowViewModelTest {
 
     @Test
     fun getPopularTvShow() {
-        val dummyPopularTvShow: Resource<List<TvShow>> = Resource.success(ArrayList())
-        val popularTvShow = MutableLiveData<Resource<List<TvShow>>>()
-        popularTvShow.value = dummyPopularTvShow
+        val dummyPopularTvShow: Resource<List<TvShow>> = Resource.Success(ArrayList())
+        val popularTvShow = flow {
+            emit(dummyPopularTvShow)
+        }
 
         Mockito.`when`(catalogueUseCase.getPopularTvShows()).thenReturn(popularTvShow)
         val movies = tvShowViewModel.getPopularTvShow().value
@@ -56,8 +57,9 @@ class TvShowViewModelTest {
 
     @Test
     fun getFavoriteTvShow() {
-        val favoriteTvShow = MutableLiveData<List<TvShow>>()
-        favoriteTvShow.value = tvShows
+        val favoriteTvShow = flow {
+            emit(tvShows)
+        }
 
         Mockito.`when`(catalogueUseCase.getFavoriteTvShows()).thenReturn(favoriteTvShow)
         val movies = tvShowViewModel.getFavoriteTvShow().value

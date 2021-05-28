@@ -13,14 +13,14 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.R
-import com.okugata.moviecatalogue.core.api.ApiConfig.IMAGE_BASE_URL
+import com.okugata.moviecatalogue.core.data.Resource
+import com.okugata.moviecatalogue.core.data.source.remote.network.ApiConfig.getImageUrl
 import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.core.utils.DeviceLocale.convertDate
 import com.okugata.moviecatalogue.databinding.ActivityDetailBinding
 import com.okugata.moviecatalogue.core.viewmodel.DetailViewModel
 import com.okugata.moviecatalogue.core.viewmodel.ViewModelFactory
-import com.okugata.moviecatalogue.core.vo.Status
 
 class DetailActivity : AppCompatActivity() {
     companion object {
@@ -62,16 +62,16 @@ class DetailActivity : AppCompatActivity() {
         if (isMovie) {
             detailViewModel.getMovieDetail(id).observe(this) { movie ->
                 if (movie != null) {
-                    when (movie.status) {
-                        Status.LOADING -> setLoading(true)
-                        Status.SUCCESS -> {
+                    when (movie) {
+                        is Resource.Loading -> setLoading(true)
+                        is Resource.Success -> {
                             setLoading(false)
                             movie.data?.let {
                                 setDetail(it)
                                 setFavoriteState(it.favorite)
                             }
                         }
-                        Status.ERROR -> {
+                        is Resource.Error -> {
                             setLoading(false)
                             Toast.makeText(this, "There is error", Toast.LENGTH_SHORT).show()
                         }
@@ -81,16 +81,16 @@ class DetailActivity : AppCompatActivity() {
         } else {
             detailViewModel.getTvShowDetail(id).observe(this) { tvShow ->
                 if (tvShow != null) {
-                    when (tvShow.status) {
-                        Status.LOADING -> setLoading(true)
-                        Status.SUCCESS -> {
+                    when (tvShow) {
+                        is Resource.Loading -> setLoading(true)
+                        is Resource.Success -> {
                             setLoading(false)
                             tvShow.data?.let {
                                 setDetail(it)
                                 setFavoriteState(it.favorite)
                             }
                         }
-                        Status.ERROR -> {
+                        is Resource.Error -> {
                             setLoading(false)
                             Toast.makeText(this, "There is error", Toast.LENGTH_SHORT).show()
                         }
@@ -154,7 +154,7 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.title = movie.title
         with(binding) {
             Glide.with(this@DetailActivity)
-                .load("${IMAGE_BASE_URL}${movie.posterPath}")
+                .load(getImageUrl(movie.posterPath))
                 .placeholder(ColorDrawable(Color.GRAY))
                 .into(imagePoster)
             textTitle.text = movie.title
@@ -172,7 +172,7 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.title = tvShow.name
         with(binding) {
             Glide.with(this@DetailActivity)
-                .load("${IMAGE_BASE_URL}${tvShow.posterPath}")
+                .load(getImageUrl(tvShow.posterPath))
                 .placeholder(ColorDrawable(Color.GRAY))
                 .into(imagePoster)
             textTitle.text = tvShow.name

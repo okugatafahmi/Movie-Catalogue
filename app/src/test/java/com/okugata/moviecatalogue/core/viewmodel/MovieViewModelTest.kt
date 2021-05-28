@@ -1,11 +1,11 @@
 package com.okugata.moviecatalogue.core.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.okugata.moviecatalogue.core.data.Resource
 import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.core.domain.usecase.CatalogueUseCase
-import com.okugata.moviecatalogue.core.vo.Resource
+import kotlinx.coroutines.flow.flow
 import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
@@ -42,9 +42,10 @@ class MovieViewModelTest {
 
     @Test
     fun getPopularMovie() {
-        val dummyPopularMovie: Resource<List<Movie>> = Resource.success(ArrayList())
-        val popularMovie = MutableLiveData<Resource<List<Movie>>>()
-        popularMovie.value = dummyPopularMovie
+        val dummyPopularMovie: Resource<List<Movie>> = Resource.Success(ArrayList())
+        val popularMovie = flow {
+            emit(dummyPopularMovie)
+        }
 
         `when`(catalogueUseCase.getPopularMovies()).thenReturn(popularMovie)
         val movies = movieViewModel.getPopularMovie().value
@@ -57,8 +58,9 @@ class MovieViewModelTest {
 
     @Test
     fun getFavoriteMovie() {
-        val favoriteMovie = MutableLiveData<List<Movie>>()
-        favoriteMovie.value = movies
+        val favoriteMovie = flow {
+            emit(movies)
+        }
 
         `when`(catalogueUseCase.getFavoriteMovies()).thenReturn(favoriteMovie)
         val movies = movieViewModel.getFavoriteMovie().value

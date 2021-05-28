@@ -1,4 +1,4 @@
-package com.okugata.moviecatalogue.core.api
+package com.okugata.moviecatalogue.core.data.source.remote.network
 
 import com.okugata.moviecatalogue.BuildConfig
 import okhttp3.OkHttpClient
@@ -7,7 +7,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiConfig {
-    const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
     fun getApiService(): ApiService {
         val client = OkHttpClient.Builder()
@@ -25,4 +24,6 @@ object ApiConfig {
             .build()
         return retrofit.create(ApiService::class.java)
     }
+
+    fun getImageUrl(path: String) = "https://image.tmdb.org/t/p/w500$path"
 }

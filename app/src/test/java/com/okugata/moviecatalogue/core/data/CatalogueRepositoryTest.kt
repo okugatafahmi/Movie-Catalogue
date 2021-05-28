@@ -1,18 +1,16 @@
 package com.okugata.moviecatalogue.core.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.nhaarman.mockitokotlin2.verify
 import com.okugata.moviecatalogue.core.data.source.local.LocalDataSource
-import com.okugata.moviecatalogue.core.data.source.local.entity.MovieDetailEntity
 import com.okugata.moviecatalogue.core.data.source.local.entity.PopularMovieEntity
 import com.okugata.moviecatalogue.core.data.source.local.entity.PopularTvShowEntity
-import com.okugata.moviecatalogue.core.data.source.local.entity.TvShowDetailEntity
 import com.okugata.moviecatalogue.core.data.source.remote.RemoteDataSource
 import com.okugata.moviecatalogue.core.utils.AppExecutors
 import com.okugata.moviecatalogue.core.utils.EntityMock
-import com.okugata.moviecatalogue.core.utils.LiveDataTestUtil
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -31,17 +29,14 @@ class CatalogueRepositoryTest {
 
     @Mock
     private lateinit var remote: RemoteDataSource
+
     @Mock
     private lateinit var local: LocalDataSource
+
     @Mock
     private lateinit var appExecutors: AppExecutors
     private lateinit var repository: FakeCatalogueRepository
     private val id = 1
-
-    @Mock
-    private lateinit var dataSourceFactoryMovie: LiveData<List<MovieDetailEntity>>
-    @Mock
-    private lateinit var dataSourceFactoryTvShow: LiveData<List<TvShowDetailEntity>>
 
     @Before
     fun setUp() {
@@ -49,56 +44,60 @@ class CatalogueRepositoryTest {
     }
 
     @Test
-    fun getPopularMovies() {
-        val dummy: List<PopularMovieEntity> = ArrayList<PopularMovieEntity>().apply{
+    fun getPopularMovies() = runBlocking {
+        val dummy: List<PopularMovieEntity> = ArrayList<PopularMovieEntity>().apply {
             add(EntityMock.popularMovie())
         }
-        val dummyMovies = MutableLiveData<List<PopularMovieEntity>>()
-        dummyMovies.value = dummy
+        val dummyMovies = flow {
+            emit(dummy)
+        }
         `when`(local.getPopularMovies()).thenReturn(dummyMovies)
 
-        val movies = LiveDataTestUtil.getValue(repository.getPopularMovies())
+        val movies = repository.getPopularMovies().first()
         verify(local).getPopularMovies()
         assertNotNull(movies.data)
         assertEquals(movies.data?.size, dummy.size)
     }
 
     @Test
-    fun getMovieDetail() {
+    fun getMovieDetail() = runBlocking {
         val dummy = EntityMock.movieDetail()
-        val dummyMovie = MutableLiveData<MovieDetailEntity>()
-        dummyMovie.value = dummy
+        val dummyMovie = flow {
+            emit(dummy)
+        }
         `when`(local.getMovieDetail(id)).thenReturn(dummyMovie)
 
-        val movie = LiveDataTestUtil.getValue(repository.getMovieDetail(id))
+        val movie = repository.getMovieDetail(id).first()
         verify(local).getMovieDetail(id)
         assertNotNull(movie.data)
         assertEquals(movie.data?.id, dummy.id)
     }
 
     @Test
-    fun getPopularTvShows() {
-        val dummy: List<PopularTvShowEntity> = ArrayList<PopularTvShowEntity>().apply{
+    fun getPopularTvShows() = runBlocking {
+        val dummy: List<PopularTvShowEntity> = ArrayList<PopularTvShowEntity>().apply {
             add(EntityMock.popularTvShow())
         }
-        val dummyTvShows = MutableLiveData<List<PopularTvShowEntity>>()
-        dummyTvShows.value = dummy
+        val dummyTvShows = flow {
+            emit(dummy)
+        }
         `when`(local.getPopularTvShows()).thenReturn(dummyTvShows)
 
-        val tvShows = LiveDataTestUtil.getValue(repository.getPopularTvShows())
+        val tvShows = repository.getPopularTvShows().first()
         verify(local).getPopularTvShows()
         assertNotNull(tvShows.data)
         assertEquals(tvShows.data?.size, dummy.size)
     }
 
     @Test
-    fun getTvShowDetail() {
+    fun getTvShowDetail() = runBlocking {
         val dummy = EntityMock.tvShowDetail()
-        val dummyTvShow = MutableLiveData<TvShowDetailEntity>()
-        dummyTvShow.value = dummy
+        val dummyTvShow = flow {
+            emit(dummy)
+        }
         `when`(local.getTvShowDetail(id)).thenReturn(dummyTvShow)
 
-        val tvShow = LiveDataTestUtil.getValue(repository.getTvShowDetail(id))
+        val tvShow = repository.getTvShowDetail(id).first()
         verify(local).getTvShowDetail(id)
         assertNotNull(tvShow.data)
         assertEquals(tvShow.data?.id, dummy.id)
@@ -106,14 +105,12 @@ class CatalogueRepositoryTest {
 
     @Test
     fun getFavoriteMovies() {
-        `when`(local.getFavoriteMovies()).thenReturn(dataSourceFactoryMovie)
         repository.getFavoriteMovies()
         verify(local).getFavoriteMovies()
     }
 
     @Test
     fun getFavoriteTvShows() {
-        `when`(local.getFavoriteTvShows()).thenReturn(dataSourceFactoryTvShow)
         repository.getFavoriteTvShows()
         verify(local).getFavoriteTvShows()
     }

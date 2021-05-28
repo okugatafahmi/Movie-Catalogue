@@ -1,12 +1,12 @@
 package com.okugata.moviecatalogue.core.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.okugata.moviecatalogue.core.data.Resource
 import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.core.domain.usecase.CatalogueUseCase
-import com.okugata.moviecatalogue.core.vo.Resource
+import kotlinx.coroutines.flow.flow
 import org.junit.Before
 import org.junit.Test
 import org.junit.Assert.*
@@ -46,9 +46,10 @@ class DetailViewModelTest {
 
     @Test
     fun getMovieDetail() {
-        val dummy = Resource.success(dummyMovieDetail)
-        val movieDetail = MutableLiveData<Resource<Movie>>()
-        movieDetail.value = dummy
+        val dummy = Resource.Success(dummyMovieDetail)
+        val movieDetail = flow {
+            emit(dummy)
+        }
 
         `when`(catalogueUseCase.getMovieDetail(id)).thenReturn(movieDetail)
         val movie = detailViewModel.getMovieDetail(id).value
@@ -61,9 +62,10 @@ class DetailViewModelTest {
 
     @Test
     fun getTvShowDetail() {
-        val dummy = Resource.success(dummyTvShowDetail)
-        val tvShowDetail = MutableLiveData<Resource<TvShow>>()
-        tvShowDetail.value = dummy
+        val dummy = Resource.Success(dummyTvShowDetail)
+        val tvShowDetail = flow {
+            emit(dummy)
+        }
 
         `when`(catalogueUseCase.getTvShowDetail(id)).thenReturn(tvShowDetail)
         val tvShow = detailViewModel.getTvShowDetail(id).value

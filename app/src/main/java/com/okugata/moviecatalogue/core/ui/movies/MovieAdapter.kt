@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.okugata.moviecatalogue.core.api.ApiConfig.IMAGE_BASE_URL
+import com.okugata.moviecatalogue.core.data.source.remote.network.ApiConfig.getImageUrl
 import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.databinding.ListItemsBinding
 import com.okugata.moviecatalogue.core.ui.detail.DetailActivity
@@ -53,7 +53,7 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
                     itemView.context.startActivity(intent)
                 }
                 Glide.with(itemView.context)
-                    .load("$IMAGE_BASE_URL${movie.posterPath}")
+                    .load(getImageUrl(movie.posterPath))
                     .placeholder(ColorDrawable(Color.GRAY))
                     .into(imgPoster)
             }

@@ -1,11 +1,10 @@
-package com.okugata.moviecatalogue.core.api
+package com.okugata.moviecatalogue.core.data.source.remote.network
 
 import com.okugata.moviecatalogue.BuildConfig
 import com.okugata.moviecatalogue.core.data.source.remote.response.MovieDetailResponse
 import com.okugata.moviecatalogue.core.data.source.remote.response.PopularMovieResponse
 import com.okugata.moviecatalogue.core.data.source.remote.response.PopularTvShowResponse
 import com.okugata.moviecatalogue.core.data.source.remote.response.TvShowDetailResponse
-import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -16,26 +15,26 @@ interface ApiService {
     }
 
     @GET("movie/popular?api_key=${BuildConfig.MOVIE_DB_TOKEN}")
-    fun getPopularMovie(
+    suspend fun getPopularMovie(
         @Query("language") language: String = LANGUAGE,
         @Query("page") page: Int = 1
-    ): Call<PopularMovieResponse>
+    ): PopularMovieResponse
 
     @GET("movie/{id}?api_key=${BuildConfig.MOVIE_DB_TOKEN}")
-    fun getMovieDetail(
+    suspend fun getMovieDetail(
         @Path("id") id: Int,
         @Query("language") language: String = LANGUAGE
-    ): Call<MovieDetailResponse>
+    ): MovieDetailResponse
 
     @GET("tv/popular?api_key=${BuildConfig.MOVIE_DB_TOKEN}")
-    fun getPopularTvShow(
+    suspend fun getPopularTvShow(
         @Query("language") language: String = LANGUAGE,
         @Query("page") page: Int = 1
-    ): Call<PopularTvShowResponse>
+    ): PopularTvShowResponse
 
     @GET("tv/{id}?api_key=${BuildConfig.MOVIE_DB_TOKEN}")
-    fun getTvShowDetail(
+    suspend fun getTvShowDetail(
         @Path("id") id: Int,
         @Query("language") language: String = LANGUAGE
-    ): Call<TvShowDetailResponse>
+    ): TvShowDetailResponse
 }

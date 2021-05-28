@@ -8,10 +8,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.okugata.moviecatalogue.core.data.Resource
 import com.okugata.moviecatalogue.databinding.FragmentMoviesBinding
 import com.okugata.moviecatalogue.core.viewmodel.MovieViewModel
 import com.okugata.moviecatalogue.core.viewmodel.ViewModelFactory
-import com.okugata.moviecatalogue.core.vo.Status
 
 class MoviesFragment(
     private val isFavorite: Boolean
@@ -63,13 +63,13 @@ class MoviesFragment(
                 }
                 movieViewModel.getPopularMovie().observe(viewLifecycleOwner) { movies ->
                     if (movies != null) {
-                        when (movies.status) {
-                            Status.LOADING -> binding.progressBar.visibility = View.VISIBLE
-                            Status.SUCCESS -> {
+                        when (movies) {
+                            is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
+                            is Resource.Success -> {
                                 binding.progressBar.visibility = View.GONE
                                 movies.data?.let { movieAdapter.setMovies(it) }
                             }
-                            Status.ERROR -> {
+                            is Resource.Error -> {
                                 binding.progressBar.visibility = View.GONE
                                 Toast.makeText(
                                     requireContext(),
