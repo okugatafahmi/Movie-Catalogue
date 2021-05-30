@@ -14,7 +14,6 @@ import com.okugata.moviecatalogue.core.utils.AppExecutors
 import com.okugata.moviecatalogue.core.utils.MovieMapper
 import com.okugata.moviecatalogue.core.utils.TvShowMapper
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class FakeCatalogueRepository constructor(
     private val remoteDataSource: RemoteDataSource,

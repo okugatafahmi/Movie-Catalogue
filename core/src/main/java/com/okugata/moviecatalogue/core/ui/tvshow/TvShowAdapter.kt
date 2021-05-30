@@ -1,6 +1,5 @@
 package com.okugata.moviecatalogue.core.ui.tvshow
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
@@ -8,13 +7,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.core.data.source.remote.network.ApiService.Companion.getImageUrl
+import com.okugata.moviecatalogue.core.databinding.ListItemsBinding
 import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.core.utils.DeviceLocale
-import com.okugata.moviecatalogue.databinding.ListItemsBinding
-import com.okugata.moviecatalogue.detail.DetailActivity
 
 class TvShowAdapter : RecyclerView.Adapter<TvShowAdapter.TvShowViewHolder>() {
     private var listTvShows = ArrayList<TvShow>()
+    var onItemClick: ((TvShow) -> Unit)? = null
 
     fun setTvShows(tvShows: List<TvShow>) {
         listTvShows.clear()
@@ -35,24 +34,22 @@ class TvShowAdapter : RecyclerView.Adapter<TvShowAdapter.TvShowViewHolder>() {
     override fun getItemCount(): Int = listTvShows.size
 
 
-    class TvShowViewHolder(private val binding: ListItemsBinding) :
+    inner class TvShowViewHolder(private val binding: ListItemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(tvShow: TvShow) {
             with(binding) {
                 tvItemTitle.text = tvShow.name
                 tvItemDate.text = DeviceLocale.convertDate(tvShow.firstAirDate)
-                itemView.setOnClickListener {
-                    val intent = Intent(itemView.context, DetailActivity::class.java).apply {
-                        putExtra(DetailActivity.EXTRA_ID, tvShow.id)
-                        putExtra(DetailActivity.EXTRA_TITLE, tvShow.name)
-                        putExtra(DetailActivity.EXTRA_IS_MOVIE, false)
-                    }
-                    itemView.context.startActivity(intent)
-                }
                 Glide.with(itemView.context)
                     .load(getImageUrl(tvShow.posterPath))
                     .placeholder(ColorDrawable(Color.GRAY))
                     .into(imgPoster)
+            }
+        }
+
+        init {
+            binding.root.setOnClickListener {
+                onItemClick?.invoke(listTvShows[adapterPosition])
             }
         }
     }

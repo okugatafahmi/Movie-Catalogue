@@ -1,5 +1,6 @@
 package com.okugata.moviecatalogue.tvshow
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.okugata.moviecatalogue.core.data.Resource
 import com.okugata.moviecatalogue.core.ui.tvshow.TvShowAdapter
 import com.okugata.moviecatalogue.databinding.FragmentTvShowsBinding
+import com.okugata.moviecatalogue.detail.DetailActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TvShowsFragment(
@@ -37,7 +39,16 @@ class TvShowsFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
-            val tvShowAdapter = TvShowAdapter()
+            val tvShowAdapter = TvShowAdapter().apply {
+                onItemClick = {
+                    val intent = Intent(activity, DetailActivity::class.java).apply {
+                        putExtra(DetailActivity.EXTRA_ID, it.id)
+                        putExtra(DetailActivity.EXTRA_TITLE, it.name)
+                        putExtra(DetailActivity.EXTRA_IS_MOVIE, false)
+                    }
+                    startActivity(intent)
+                }
+            }
             with(binding.rvTvShows) {
                 layoutManager = LinearLayoutManager(context)
                 setHasFixedSize(true)

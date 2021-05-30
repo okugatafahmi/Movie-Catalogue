@@ -1,5 +1,6 @@
 package com.okugata.moviecatalogue.movie
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.okugata.moviecatalogue.core.data.Resource
 import com.okugata.moviecatalogue.core.ui.movie.MovieAdapter
 import com.okugata.moviecatalogue.databinding.FragmentMoviesBinding
+import com.okugata.moviecatalogue.detail.DetailActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment(
@@ -37,7 +39,16 @@ class MoviesFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
-            val movieAdapter = MovieAdapter()
+            val movieAdapter = MovieAdapter().apply {
+                onItemClick = {
+                    val intent = Intent(activity, DetailActivity::class.java).apply {
+                        putExtra(DetailActivity.EXTRA_ID, it.id)
+                        putExtra(DetailActivity.EXTRA_TITLE, it.title)
+                        putExtra(DetailActivity.EXTRA_IS_MOVIE, true)
+                    }
+                    startActivity(intent)
+                }
+            }
             with(binding.rvMovies) {
                 layoutManager = LinearLayoutManager(context)
                 setHasFixedSize(true)
