@@ -1,4 +1,4 @@
-package com.okugata.moviecatalogue.core.viewmodel
+package com.okugata.moviecatalogue.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

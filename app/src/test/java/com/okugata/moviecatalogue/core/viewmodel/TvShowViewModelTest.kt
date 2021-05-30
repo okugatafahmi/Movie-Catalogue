@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.okugata.moviecatalogue.core.data.Resource
 import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.core.domain.usecase.CatalogueUseCase
+import com.okugata.moviecatalogue.tvshow.TvShowViewModel
 import kotlinx.coroutines.flow.flow
 import org.junit.Before
 import org.junit.Test

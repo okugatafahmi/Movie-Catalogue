@@ -1,4 +1,4 @@
-package com.okugata.moviecatalogue.core.ui.main
+package com.okugata.moviecatalogue.main
 
 import android.app.Activity
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +16,7 @@ import androidx.test.runner.lifecycle.Stage
 import com.okugata.moviecatalogue.R
 import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.core.domain.model.TvShow
-import com.okugata.moviecatalogue.core.ui.detail.DetailActivity
+import com.okugata.moviecatalogue.detail.DetailActivity
 import com.okugata.moviecatalogue.core.utils.DeviceLocale
 import com.okugata.moviecatalogue.core.utils.EspressoIdlingResource
 import org.junit.After

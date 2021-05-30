@@ -1,4 +1,4 @@
-package com.okugata.moviecatalogue.core.ui.tvshows
+package com.okugata.moviecatalogue.core.ui.tvshow
 
 import android.content.Intent
 import android.graphics.Color
@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.core.data.source.remote.network.ApiService.Companion.getImageUrl
 import com.okugata.moviecatalogue.core.domain.model.TvShow
-import com.okugata.moviecatalogue.databinding.ListItemsBinding
-import com.okugata.moviecatalogue.core.ui.detail.DetailActivity
 import com.okugata.moviecatalogue.core.utils.DeviceLocale
+import com.okugata.moviecatalogue.databinding.ListItemsBinding
+import com.okugata.moviecatalogue.detail.DetailActivity
 
 class TvShowAdapter : RecyclerView.Adapter<TvShowAdapter.TvShowViewHolder>() {
     private var listTvShows = ArrayList<TvShow>()

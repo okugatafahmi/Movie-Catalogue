@@ -1,4 +1,4 @@
-package com.okugata.moviecatalogue.core.ui.tvshows
+package com.okugata.moviecatalogue.tvshow
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.okugata.moviecatalogue.core.data.Resource
+import com.okugata.moviecatalogue.core.ui.tvshow.TvShowAdapter
 import com.okugata.moviecatalogue.databinding.FragmentTvShowsBinding
-import com.okugata.moviecatalogue.core.viewmodel.TvShowViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TvShowsFragment(

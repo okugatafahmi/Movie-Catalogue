@@ -1,4 +1,4 @@
-package com.okugata.moviecatalogue.core.ui.main
+package com.okugata.moviecatalogue.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,7 +7,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.okugata.moviecatalogue.R
 import com.okugata.moviecatalogue.databinding.ActivityMainBinding
-import com.okugata.moviecatalogue.core.ui.favorite.FavoriteActivity
+import com.okugata.moviecatalogue.favorite.FavoriteActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

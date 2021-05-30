@@ -6,6 +6,7 @@ import com.okugata.moviecatalogue.core.data.Resource
 import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.core.domain.usecase.CatalogueUseCase
+import com.okugata.moviecatalogue.detail.DetailViewModel
 import kotlinx.coroutines.flow.flow
 import org.junit.Before
 import org.junit.Test

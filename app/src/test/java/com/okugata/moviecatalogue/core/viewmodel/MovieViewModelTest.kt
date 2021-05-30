@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.okugata.moviecatalogue.core.data.Resource
 import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.core.domain.usecase.CatalogueUseCase
+import com.okugata.moviecatalogue.movie.MovieViewModel
 import kotlinx.coroutines.flow.flow
 import org.junit.Test
 import org.junit.Assert.*

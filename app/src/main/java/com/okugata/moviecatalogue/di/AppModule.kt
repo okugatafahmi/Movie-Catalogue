@@ -2,9 +2,9 @@ package com.okugata.moviecatalogue.di
 
 import com.okugata.moviecatalogue.core.domain.usecase.CatalogueInteractor
 import com.okugata.moviecatalogue.core.domain.usecase.CatalogueUseCase
-import com.okugata.moviecatalogue.core.viewmodel.DetailViewModel
-import com.okugata.moviecatalogue.core.viewmodel.MovieViewModel
-import com.okugata.moviecatalogue.core.viewmodel.TvShowViewModel
+import com.okugata.moviecatalogue.detail.DetailViewModel
+import com.okugata.moviecatalogue.movie.MovieViewModel
+import com.okugata.moviecatalogue.tvshow.TvShowViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

@@ -1,4 +1,4 @@
-package com.okugata.moviecatalogue.core.ui.movies
+package com.okugata.moviecatalogue.movie
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.okugata.moviecatalogue.core.data.Resource
+import com.okugata.moviecatalogue.core.ui.movie.MovieAdapter
 import com.okugata.moviecatalogue.databinding.FragmentMoviesBinding
-import com.okugata.moviecatalogue.core.viewmodel.MovieViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment(

@@ -1,11 +1,11 @@
-package com.okugata.moviecatalogue.core.ui.favorite
+package com.okugata.moviecatalogue.favorite
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import com.okugata.moviecatalogue.R
 import com.okugata.moviecatalogue.databinding.ActivityMainBinding
-import com.okugata.moviecatalogue.core.ui.main.SectionsPagerAdapter
+import com.okugata.moviecatalogue.main.SectionsPagerAdapter
 
 class FavoriteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

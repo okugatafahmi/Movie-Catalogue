@@ -1,4 +1,4 @@
-package com.okugata.moviecatalogue.core.ui.main
+package com.okugata.moviecatalogue.main
 
 import android.content.Context
 import androidx.annotation.StringRes
@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.okugata.moviecatalogue.R
-import com.okugata.moviecatalogue.core.ui.movies.MoviesFragment
-import com.okugata.moviecatalogue.core.ui.tvshows.TvShowsFragment
+import com.okugata.moviecatalogue.movie.MoviesFragment
+import com.okugata.moviecatalogue.tvshow.TvShowsFragment
 
 class SectionsPagerAdapter(
     private val mContext: Context,

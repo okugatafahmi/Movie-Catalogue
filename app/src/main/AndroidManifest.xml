@@ -13,11 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MovieCatalogue">
-        <activity android:name="com.okugata.moviecatalogue.core.ui.favorite.FavoriteActivity"/>
+        <activity android:name="com.okugata.moviecatalogue.favorite.FavoriteActivity"/>
         <activity
-            android:name="com.okugata.moviecatalogue.core.ui.detail.DetailActivity"
+            android:name="com.okugata.moviecatalogue.detail.DetailActivity"
             android:theme="@style/Theme.MovieCatalogue.NoActionBar" />
-        <activity android:name="com.okugata.moviecatalogue.core.ui.main.MainActivity">
+        <activity android:name="com.okugata.moviecatalogue.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

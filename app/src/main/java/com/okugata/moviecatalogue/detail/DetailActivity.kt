@@ -1,4 +1,4 @@
-package com.okugata.moviecatalogue.core.ui.detail
+package com.okugata.moviecatalogue.detail
 
 import android.content.Intent
 import android.graphics.Color
@@ -18,7 +18,6 @@ import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.core.utils.DeviceLocale.convertDate
 import com.okugata.moviecatalogue.databinding.ActivityDetailBinding
-import com.okugata.moviecatalogue.core.viewmodel.DetailViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailActivity : AppCompatActivity() {
