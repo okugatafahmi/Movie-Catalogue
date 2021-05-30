@@ -13,7 +13,7 @@ import com.okugata.moviecatalogue.core.utils.TvShowMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class CatalogueRepository private constructor(
+class CatalogueRepository(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
     private val appExecutors: AppExecutors
@@ -126,23 +126,5 @@ class CatalogueRepository private constructor(
     override fun setTvShowFavorite(tvShow: TvShow, newState: Boolean) {
         val entity = TvShowMapper.mapDomainToDetailEntity(tvShow)
         appExecutors.diskIO().execute { localDataSource.setTvShowFavorite(entity, newState) }
-    }
-
-
-    companion object {
-        @Volatile
-        private var instance: CatalogueRepository? = null
-        fun getInstance(
-            remoteDataSource: RemoteDataSource,
-            localDataSource: LocalDataSource,
-            appExecutors: AppExecutors
-        ): CatalogueRepository =
-            instance ?: synchronized(this) {
-                instance ?: CatalogueRepository(
-                    remoteDataSource,
-                    localDataSource,
-                    appExecutors
-                ).apply { instance = this }
-            }
     }
 }

@@ -12,6 +12,7 @@ import retrofit2.http.Query
 interface ApiService {
     companion object {
         const val LANGUAGE = "en-US"
+        fun getImageUrl(path: String) = "https://image.tmdb.org/t/p/w500$path"
     }
 
     @GET("movie/popular?api_key=${BuildConfig.MOVIE_DB_TOKEN}")

@@ -6,12 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.okugata.moviecatalogue.core.data.Resource
 import com.okugata.moviecatalogue.databinding.FragmentTvShowsBinding
 import com.okugata.moviecatalogue.core.viewmodel.TvShowViewModel
-import com.okugata.moviecatalogue.core.viewmodel.ViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TvShowsFragment(
     private val isFavorite: Boolean
@@ -19,7 +18,7 @@ class TvShowsFragment(
     private var _binding: FragmentTvShowsBinding? = null
     private val binding
         get() = _binding!!
-    private lateinit var tvShowViewModel: TvShowViewModel
+    private val tvShowViewModel: TvShowViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,10 +26,6 @@ class TvShowsFragment(
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTvShowsBinding.inflate(layoutInflater, container, false)
-        tvShowViewModel = ViewModelProvider(
-            this,
-            ViewModelFactory.getInstance(requireActivity())
-        )[TvShowViewModel::class.java]
         return binding.root
     }
 
@@ -42,25 +37,19 @@ class TvShowsFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
+            val tvShowAdapter = TvShowAdapter()
+            with(binding.rvTvShows) {
+                layoutManager = LinearLayoutManager(context)
+                setHasFixedSize(true)
+                adapter = tvShowAdapter
+            }
             if (isFavorite) {
-                val tvShowAdapter = FavoriteTvShowAdapter()
-                with(binding.rvTvShows) {
-                    layoutManager = LinearLayoutManager(context)
-                    setHasFixedSize(true)
-                    adapter = tvShowAdapter
-                }
                 tvShowViewModel.getFavoriteTvShow().observe(viewLifecycleOwner) { tvShows ->
                     if (tvShows != null) {
                         tvShowAdapter.setTvShows(tvShows)
                     }
                 }
             } else {
-                val tvShowAdapter = TvShowAdapter()
-                with(binding.rvTvShows) {
-                    layoutManager = LinearLayoutManager(context)
-                    setHasFixedSize(true)
-                    adapter = tvShowAdapter
-                }
                 tvShowViewModel.getPopularTvShow().observe(viewLifecycleOwner) { tvShows ->
                     if (tvShows != null) {
                         when (tvShows) {

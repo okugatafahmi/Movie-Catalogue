@@ -6,12 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.okugata.moviecatalogue.core.data.Resource
 import com.okugata.moviecatalogue.databinding.FragmentMoviesBinding
 import com.okugata.moviecatalogue.core.viewmodel.MovieViewModel
-import com.okugata.moviecatalogue.core.viewmodel.ViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment(
     private val isFavorite: Boolean
@@ -19,7 +18,7 @@ class MoviesFragment(
     private var _binding: FragmentMoviesBinding? = null
     private val binding
         get() = _binding!!
-    private lateinit var movieViewModel: MovieViewModel
+    private val movieViewModel: MovieViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,10 +26,6 @@ class MoviesFragment(
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMoviesBinding.inflate(layoutInflater, container, false)
-        movieViewModel = ViewModelProvider(
-            this,
-            ViewModelFactory.getInstance(requireActivity())
-        )[MovieViewModel::class.java]
         return binding.root
     }
 
@@ -42,25 +37,19 @@ class MoviesFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
+            val movieAdapter = MovieAdapter()
+            with(binding.rvMovies) {
+                layoutManager = LinearLayoutManager(context)
+                setHasFixedSize(true)
+                adapter = movieAdapter
+            }
             if (isFavorite) {
-                val movieAdapter = FavoriteMovieAdapter()
-                with(binding.rvMovies) {
-                    layoutManager = LinearLayoutManager(context)
-                    setHasFixedSize(true)
-                    adapter = movieAdapter
-                }
                 movieViewModel.getFavoriteMovie().observe(viewLifecycleOwner) { movies ->
                     if (movies != null) {
                         movieAdapter.setMovies(movies)
                     }
                 }
             } else {
-                val movieAdapter = MovieAdapter()
-                with(binding.rvMovies) {
-                    layoutManager = LinearLayoutManager(context)
-                    setHasFixedSize(true)
-                    adapter = movieAdapter
-                }
                 movieViewModel.getPopularMovie().observe(viewLifecycleOwner) { movies ->
                     if (movies != null) {
                         when (movies) {

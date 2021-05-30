@@ -7,7 +7,7 @@ import com.okugata.moviecatalogue.core.data.source.local.entity.TvShowDetailEnti
 import com.okugata.moviecatalogue.core.data.source.local.room.CatalogueDao
 import kotlinx.coroutines.flow.Flow
 
-class LocalDataSource private constructor(private val catalogueDao: CatalogueDao) {
+class LocalDataSource(private val catalogueDao: CatalogueDao) {
 
     fun getPopularMovies(): Flow<List<PopularMovieEntity>> = catalogueDao.getPopularMovies()
     suspend fun insertPopularMovies(movies: List<PopularMovieEntity>) =
@@ -36,12 +36,5 @@ class LocalDataSource private constructor(private val catalogueDao: CatalogueDao
     fun setTvShowFavorite(tvShow: TvShowDetailEntity, newState: Boolean) {
         tvShow.favorite = newState
         catalogueDao.updateTvShowDetail(tvShow)
-    }
-
-    companion object {
-        private var INSTANCE: LocalDataSource? = null
-
-        fun getInstance(academyDao: CatalogueDao): LocalDataSource =
-            INSTANCE ?: LocalDataSource(academyDao)
     }
 }

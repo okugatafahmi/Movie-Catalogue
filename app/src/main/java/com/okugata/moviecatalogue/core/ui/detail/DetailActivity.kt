@@ -10,17 +10,16 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.okugata.moviecatalogue.R
 import com.okugata.moviecatalogue.core.data.Resource
-import com.okugata.moviecatalogue.core.data.source.remote.network.ApiConfig.getImageUrl
+import com.okugata.moviecatalogue.core.data.source.remote.network.ApiService.Companion.getImageUrl
 import com.okugata.moviecatalogue.core.domain.model.Movie
 import com.okugata.moviecatalogue.core.domain.model.TvShow
 import com.okugata.moviecatalogue.core.utils.DeviceLocale.convertDate
 import com.okugata.moviecatalogue.databinding.ActivityDetailBinding
 import com.okugata.moviecatalogue.core.viewmodel.DetailViewModel
-import com.okugata.moviecatalogue.core.viewmodel.ViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailActivity : AppCompatActivity() {
     companion object {
@@ -30,7 +29,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityDetailBinding
-    private lateinit var detailViewModel: DetailViewModel
+    private val detailViewModel: DetailViewModel by viewModel()
     private var isMovie = true
     private var movie: Movie? = null
     private var tvShow: TvShow? = null
@@ -44,10 +43,6 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        detailViewModel = ViewModelProvider(
-            this,
-            ViewModelFactory.getInstance(this)
-        )[DetailViewModel::class.java]
         id = intent.getIntExtra(EXTRA_ID, 0)
         isMovie = intent.getBooleanExtra(EXTRA_IS_MOVIE, true)
 

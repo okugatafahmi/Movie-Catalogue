@@ -1,8 +1,8 @@
 package com.okugata.moviecatalogue.core.data.source.remote
 
 import android.util.Log
-import com.okugata.moviecatalogue.core.data.source.remote.network.ApiConfig
 import com.okugata.moviecatalogue.core.data.source.remote.network.ApiResponse
+import com.okugata.moviecatalogue.core.data.source.remote.network.ApiService
 import com.okugata.moviecatalogue.core.data.source.remote.response.MovieDetailResponse
 import com.okugata.moviecatalogue.core.data.source.remote.response.PopularMovieResponse
 import com.okugata.moviecatalogue.core.data.source.remote.response.PopularTvShowResponse
@@ -12,14 +12,15 @@ import com.okugata.moviecatalogue.core.utils.EspressoIdlingResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
-class RemoteDataSource private constructor() {
+class RemoteDataSource(private val apiService: ApiService) {
 
     suspend fun getPopularMovie(): Flow<ApiResponse<PopularMovieResponse>> {
         return flow {
             EspressoIdlingResource.increment()
             try {
-                val response = ApiConfig.getApiService()
+                val response = apiService
                     .getPopularMovie(DeviceLocale.getLanguage())
                 emit(ApiResponse.Success(response))
                 EspressoIdlingResource.decrement()
@@ -35,7 +36,7 @@ class RemoteDataSource private constructor() {
         return flow {
             EspressoIdlingResource.increment()
             try {
-                val response = ApiConfig.getApiService()
+                val response = apiService
                     .getMovieDetail(id, DeviceLocale.getLanguage())
                 emit(ApiResponse.Success(response))
                 EspressoIdlingResource.decrement()
@@ -51,7 +52,7 @@ class RemoteDataSource private constructor() {
         return flow {
             EspressoIdlingResource.increment()
             try {
-                val response = ApiConfig.getApiService()
+                val response = apiService
                     .getPopularTvShow(DeviceLocale.getLanguage())
                 emit(ApiResponse.Success(response))
                 EspressoIdlingResource.decrement()
@@ -67,7 +68,7 @@ class RemoteDataSource private constructor() {
         return flow {
             EspressoIdlingResource.increment()
             try {
-                val response = ApiConfig.getApiService()
+                val response = apiService
                     .getTvShowDetail(id, DeviceLocale.getLanguage())
                 emit(ApiResponse.Success(response))
                 EspressoIdlingResource.decrement()
@@ -81,13 +82,6 @@ class RemoteDataSource private constructor() {
     }
 
     companion object {
-        @Volatile
-        private var instance: RemoteDataSource? = null
         const val TAG = "RemoteDataSource"
-
-        fun getInstance(): RemoteDataSource =
-            instance ?: synchronized(this) {
-                instance ?: RemoteDataSource().apply { instance = this }
-            }
     }
 }
