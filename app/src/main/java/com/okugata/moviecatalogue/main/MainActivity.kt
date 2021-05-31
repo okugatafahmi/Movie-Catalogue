@@ -1,13 +1,13 @@
 package com.okugata.moviecatalogue.main
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.okugata.moviecatalogue.R
 import com.okugata.moviecatalogue.databinding.ActivityMainBinding
-import com.okugata.moviecatalogue.favorite.FavoriteActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -31,8 +31,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.favorite -> {
-                val intent = Intent(this, FavoriteActivity::class.java)
-                startActivity(intent)
+                val uri = Uri.parse("moviecatalogue://favorite")
+                startActivity(Intent(Intent.ACTION_VIEW, uri))
             }
         }
         return super.onOptionsItemSelected(item)

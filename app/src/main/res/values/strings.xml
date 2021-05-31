@@ -18,4 +18,5 @@
         <item quantity="one">%1$s episode</item>
         <item quantity="other">%1$s episodes</item>
     </plurals>
+    <string name="title_favorite">Favorite</string>
 </resources>
