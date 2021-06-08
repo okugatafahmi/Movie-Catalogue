@@ -57,4 +57,8 @@ dependencies {
 
     // idling resource
     implementation "androidx.test.espresso:espresso-idling-resource:3.3.0"
+
+    // sql cipher
+    implementation "net.zetetic:android-database-sqlcipher:4.4.0"
+    implementation "androidx.sqlite:sqlite-ktx:2.1.0"
 }
