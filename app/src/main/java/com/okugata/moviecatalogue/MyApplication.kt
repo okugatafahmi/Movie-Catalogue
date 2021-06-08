@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.okugata.moviecatalogue
 
 import android.app.Application

@@ -1,3 +1,5 @@
+@file:Suppress("RemoveExplicitTypeArguments")
+
 package com.okugata.moviecatalogue.core.data
 
 import com.okugata.moviecatalogue.core.data.source.remote.network.ApiResponse
